@@ -8,6 +8,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ics_util.cpp" />
@@ -19,6 +22,9 @@
     <ClInclude Include="src\file_util.hpp" />
     <ClInclude Include="src\ics_util.hpp" />
     <ClInclude Include="src\logger.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="LICENSE.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
