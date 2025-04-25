@@ -3,7 +3,7 @@
 #include <ics/ics_defines.h>
 #include <fclasses/tc_string.h>
 
-#include "ics_util.hpp"
+#include "../include/ics_util.hpp"
 #include "mem_util.hpp"
 #include "logger.hpp"
 
