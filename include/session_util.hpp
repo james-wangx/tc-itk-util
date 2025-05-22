@@ -28,4 +28,6 @@ int SESSION_UTIL_get_fms_home(std::string &fms_home);
 
 int SESSION_UTIL_get_tc_root(std::string &tc_root);
 
+int SESSION_UTIL_get_tc_bin(std::string &tc_bin);
+
 #endif // !SESSION_UTIL_HPP

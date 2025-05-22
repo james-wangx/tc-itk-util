@@ -82,3 +82,13 @@ TEST(session_util_test, SESSION_UTIL_get_tc_root) {
     EXPECT_EQ(tc_root, std::string("D:\\Siemens\\Teamcenter2412FourTier"))
     << "tc_root: " << tc_root << ", expected: D:\\Siemens\\Teamcenter2412FourTier";
 }
+
+TEST(session_util_test, SESSION_UTIL_get_tc_bin) {
+    int rcode = ITK_ok;
+    std::string tc_bin;
+
+    rcode = SESSION_UTIL_get_tc_bin(tc_bin);
+    EXPECT_EQ(rcode, ITK_ok) << "Failed to get TC_BIN";
+    EXPECT_EQ(tc_bin, std::string("D:\\Siemens\\Teamcenter2412FourTier\\bin"))
+    << "tc_bin: " << tc_bin << ", expected: D:\\Siemens\\Teamcenter2412FourTier\\bin";
+}

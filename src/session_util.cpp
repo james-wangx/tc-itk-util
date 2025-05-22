@@ -55,3 +55,14 @@ int SESSION_UTIL_get_tc_root(std::string &tc_root) {
 CLEANUP:
     return rcode;
 }
+
+int SESSION_UTIL_get_tc_bin(std::string &tc_bin) {
+    int rcode = ITK_ok;
+    std::string tc_root;
+
+    LOGGER_ITK_GOTO(SESSION_UTIL_get_tc_root(tc_root));
+    tc_bin = tc_root + "\\bin";
+
+CLEANUP:
+    return rcode;
+}
