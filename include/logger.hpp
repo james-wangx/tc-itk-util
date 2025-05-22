@@ -99,7 +99,7 @@
         char* error = nullptr;                                              \
         EMH_ask_error_text(rcode, &error);                                  \
         LOGGER_ERROR("Found error code: %d, message: %s\n", rcode, error);  \
-        MEM_UTIL_FREE(error);                                               \
+        MEM_UTIL_FREE_ITK(error);                                           \
         goto CLEANUP;                                                       \
     }                                                                       \
 }
@@ -121,7 +121,7 @@
         char* error = nullptr;                                              \
         EMH_ask_error_text(rcode, &error);                                  \
         LOGGER_ERROR("Found error code: %d, message: %s\n", rcode, error);  \
-        MEM_UTIL_FREE(error);                                               \
+        MEM_UTIL_FREE_ITK(error);                                           \
     }                                                                       \
 }
 
@@ -182,7 +182,7 @@
         EMH_ask_error_text(rcode, &error);                                  \
         LOGGER_ERROR("Registering " reg_name ", failed!");                  \
         LOGGER_ERROR("Found error code: %d, message: %s\n", rcode, error);  \
-        MEM_UTIL_FREE(error);                                               \
+        MEM_UTIL_FREE_ITK(error);                                           \
         goto CLEANUP;                                                       \
     }                                                                       \
 }
@@ -211,7 +211,7 @@
         EMH_ask_error_text(rcode, &error);                                  \
         LOGGER_ERROR("Registering " reg_name ", failed!");                  \
         LOGGER_ERROR("Found error code: %d, message: %s\n", rcode, error);  \
-        MEM_UTIL_FREE(error);                                               \
+        MEM_UTIL_FREE_ITK(error);                                           \
     }                                                                       \
 }
 

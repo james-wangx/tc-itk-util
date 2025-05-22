@@ -26,17 +26,17 @@ int ITEM_UTIL_get_latest_released_revision(const tag_t item_tag, const char *sta
             LOGGER_ITK_GOTO(AOM_ask_value_string(release_status_tag, "object_name", &status_name_temp));
             if (tc_strcmp(status_name_temp, status_name) == 0) {
                 *revision_tag = revision_tag_temp;
-                MEM_UTIL_FREE(revision_tags);
-                MEM_UTIL_FREE(release_status_tags);
-                MEM_UTIL_FREE(status_name_temp);
+                MEM_UTIL_FREE_ITK(revision_tags);
+                MEM_UTIL_FREE_ITK(release_status_tags);
+                MEM_UTIL_FREE_ITK(status_name_temp);
                 goto CLEANUP;
             }
-            MEM_UTIL_FREE(status_name_temp);
+            MEM_UTIL_FREE_ITK(status_name_temp);
         }
-        MEM_UTIL_FREE(release_status_tags);
+        MEM_UTIL_FREE_ITK(release_status_tags);
     }
 
 CLEANUP:
-    MEM_UTIL_FREE(revision_tags);
+    MEM_UTIL_FREE_ITK(revision_tags);
     return rcode;
 }

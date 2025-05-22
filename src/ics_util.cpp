@@ -31,7 +31,7 @@ int ICS_UTIL_search_ico(const char* class_id, int* ico_count, tag_t** ico_tags, 
         class_ids, wso_tags, wso_uids));
 
 CLEANUP:
-    MEM_UTIL_FREE(attr_expr);
+    MEM_UTIL_FREE_ITK(attr_expr);
     return rcode;
 }
 
@@ -60,7 +60,7 @@ int ICS_UTIL_get_struct(const char* class_id)
     }
 
 CLEANUP:
-    MEM_UTIL_FREE(child_class_ids);
+    MEM_UTIL_FREE_ITK(child_class_ids);
     return rcode;
 }
 
@@ -105,8 +105,8 @@ int ICS_UTIL_get_class_attr(const tag_t ico_tag, int* attr_count, char*** attr_n
     }
 
 CLEANUP:
-    MEM_UTIL_FREE(attr_ids);
-    MEM_UTIL_FREE(attr_val_counts);
-    MEM_UTIL_FREE(attr_val_values);
+    MEM_UTIL_FREE_ITK(attr_ids);
+    MEM_UTIL_FREE_ITK(attr_val_counts);
+    MEM_UTIL_FREE_ITK(attr_val_values);
     return rcode;
 }

@@ -19,7 +19,7 @@ TEST(session_util_test, TXTSRV_get_current_locale) {
     EXPECT_EQ(std::string(current_locale),
               std::string("en_US")) << "current locale: " << current_locale << ", expected: en_US";
 
-    MEM_UTIL_FREE(current_locale);
+    MEM_UTIL_FREE_ITK(current_locale);
 }
 
 TEST(session_util_test, TXTSRV_set_current_locale) {
@@ -37,7 +37,7 @@ TEST(session_util_test, TXTSRV_set_current_locale) {
 
     TXTSRV_set_current_locale("en_US");
 
-    MEM_UTIL_FREE(current_locale);
+    MEM_UTIL_FREE_ITK(current_locale);
 }
 
 TEST(session_util_test, SESSION_UTIL_get_worklist) {
@@ -52,7 +52,7 @@ TEST(session_util_test, SESSION_UTIL_get_worklist) {
     EXPECT_EQ(std::string("My Worklist"), std::string(worklist_string))
     << "Worklist string: " << worklist_string << ", expected: My Worklist";
 
-    MEM_UTIL_FREE(worklist_string);
+    MEM_UTIL_FREE_ITK(worklist_string);
 }
 
 TEST(session_util_test, SESSION_UTIL_get_session) {
@@ -62,4 +62,15 @@ TEST(session_util_test, SESSION_UTIL_get_session) {
     rcode = SESSION_UTIL_get_session(&session_tag);
     EXPECT_EQ(rcode, ITK_ok) << "Failed to get session";
     EXPECT_NE(session_tag, NULLTAG) << "Session tag is NULLTAG";
+}
+
+TEST(session_util_test, SESSION_UTIL_get_fms_home) {
+    int rcode = ITK_ok;
+    char *fms_home = nullptr;
+
+    rcode = SESSION_UTIL_get_fms_home(&fms_home);
+    EXPECT_EQ(rcode, ITK_ok) << "Failed to get FMS_HOME";
+    EXPECT_NE(fms_home, nullptr) << "FMS_HOME is NULL";
+
+    MEM_UTIL_FREE_CST(fms_home);
 }

@@ -54,6 +54,6 @@ CLEANUP:
     }
     delete[] entries;
     delete[] values;
-    MEM_UTIL_FREE(result_tags);
+    MEM_UTIL_FREE_ITK(result_tags);
     return rcode;
 }
