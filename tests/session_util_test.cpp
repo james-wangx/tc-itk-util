@@ -1,9 +1,13 @@
 #include <gtest/gtest.h>
 
-#include <tcdefs.h>
+#include <tccore/aom_prop.h>
 
 #include "session_util.hpp"
+#include "logger.hpp"
+
 #include "mem_util.hpp"
+
+extern logical debug;
 
 TEST(session_util_test, TXTSRV_get_current_locale) {
     int rcode = ITK_ok;
@@ -34,4 +38,19 @@ TEST(session_util_test, TXTSRV_set_current_locale) {
     TXTSRV_set_current_locale("en_US");
 
     MEM_UTIL_FREE(current_locale);
+}
+
+TEST(session_util_test, SESSION_UTIL_get_worklist) {
+    int rcode = ITK_ok;
+    tag_t worklist_tag = NULLTAG;
+    char *worklist_string = nullptr;
+
+    rcode = SESSION_UTIL_get_worklist(&worklist_tag);
+    EXPECT_EQ(rcode, ITK_ok) << "Failed to get worklist";
+
+    LOGGER_ITK_PASS(AOM_ask_value_string(worklist_tag, "object_string", &worklist_string));
+    EXPECT_EQ(std::string("My Worklist"), std::string(worklist_string))
+    << "Worklist string: " << worklist_string << ", expected: My Worklist";
+
+    MEM_UTIL_FREE(worklist_string);
 }

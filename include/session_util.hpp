@@ -5,6 +5,7 @@
 #undef EXPORTLIBRARY
 #endif
 
+#include <unidefs.h>
 #include <textsrv/libtextsrv_exports.h>
 
 #ifdef __cplusplus
@@ -18,5 +19,7 @@ extern TEXTSRV_API int TXTSRV_set_current_locale(const char *locale);
 #ifdef __cplusplus
 }
 #endif // __cplusplus
+
+int SESSION_UTIL_get_worklist(tag_t *worklist_tag);
 
 #endif // !SESSION_UTIL_HPP

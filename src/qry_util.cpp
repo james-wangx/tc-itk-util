@@ -1,10 +1,9 @@
-#include "qry_util.hpp"
-
 #include <map>
 #include <string>
 #include <tcdefs.h>
 #include <qry/qry.h>
 
+#include "qry_util.hpp"
 #include "logger.hpp"
 
 extern logical debug;
@@ -55,5 +54,6 @@ CLEANUP:
     }
     delete[] entries;
     delete[] values;
+    MEM_UTIL_FREE(result_tags);
     return rcode;
 }

@@ -8,6 +8,10 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
+#ifdef EXPORTLIBRARY
+#undef EXPORTLIBRARY
+#endif
+
 #include <tc/emh.h>
 #include <tc/tc_startup.h>
 #include <tc/tc_util.h>
