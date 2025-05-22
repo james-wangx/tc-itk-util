@@ -54,3 +54,12 @@ TEST(session_util_test, SESSION_UTIL_get_worklist) {
 
     MEM_UTIL_FREE(worklist_string);
 }
+
+TEST(session_util_test, SESSION_UTIL_get_session) {
+    int rcode = ITK_ok;
+    tag_t session_tag = NULLTAG;
+
+    rcode = SESSION_UTIL_get_session(&session_tag);
+    EXPECT_EQ(rcode, ITK_ok) << "Failed to get session";
+    EXPECT_NE(session_tag, NULLTAG) << "Session tag is NULLTAG";
+}

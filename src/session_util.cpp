@@ -17,3 +17,12 @@ int SESSION_UTIL_get_worklist(tag_t *worklist_tag) {
 CLEANUP:
     return rcode;
 }
+
+int SESSION_UTIL_get_session(tag_t *session_tag) {
+    int rcode = ITK_ok;
+
+    LOGGER_ITK_GOTO(POM_ask_session(session_tag));
+
+CLEANUP:
+    return rcode;
+}
