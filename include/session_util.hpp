@@ -30,4 +30,6 @@ int SESSION_UTIL_get_tc_root(std::string &tc_root);
 
 int SESSION_UTIL_get_tc_bin(std::string &tc_bin);
 
+int SESSION_UTIL_get_current_user(std::string &user_name, tag_t &user_tag);
+
 #endif // !SESSION_UTIL_HPP

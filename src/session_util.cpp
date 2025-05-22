@@ -66,3 +66,15 @@ int SESSION_UTIL_get_tc_bin(std::string &tc_bin) {
 CLEANUP:
     return rcode;
 }
+
+int SESSION_UTIL_get_current_user(std::string &user_name, tag_t &user_tag) {
+    int rcode = ITK_ok;
+    char *user_name_temp = nullptr;
+
+    LOGGER_ITK_GOTO(POM_get_user(&user_name_temp, &user_tag));
+    user_name = user_name_temp;
+
+CLEANUP:
+    MEM_UTIL_FREE_ITK(user_name_temp);
+    return rcode;
+}

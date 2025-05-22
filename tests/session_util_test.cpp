@@ -92,3 +92,14 @@ TEST(session_util_test, SESSION_UTIL_get_tc_bin) {
     EXPECT_EQ(tc_bin, std::string("D:\\Siemens\\Teamcenter2412FourTier\\bin"))
     << "tc_bin: " << tc_bin << ", expected: D:\\Siemens\\Teamcenter2412FourTier\\bin";
 }
+
+TEST(session_util_test, SESSION_UTIL_get_current_user) {
+    int rcode = ITK_ok;
+    std::string user_name;
+    tag_t user_tag = NULLTAG;
+
+    rcode = SESSION_UTIL_get_current_user(user_name, user_tag);
+    EXPECT_EQ(rcode, ITK_ok) << "Failed to get current user";
+    EXPECT_EQ(user_name, std::string("王舰")) << "user_name: " << user_name << ", expected: 王舰";
+    EXPECT_NE(user_tag, NULLTAG) << "user_tag is NULLTAG";
+}
