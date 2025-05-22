@@ -7,6 +7,7 @@
 constexpr int WRONG_USAGE = 100001;
 
 logical debug = false;
+char *user = nullptr;
 
 int ITK_user_main(int argc, char **argv) {
     int rcode = ITK_ok;
@@ -32,6 +33,8 @@ int ITK_user_main(int argc, char **argv) {
     LOGGER_ITK_GOTO(ITK_initialize_text_services(0));
     LOGGER_ITK_GOTO(ITK_init_module(usr, upw, ugp));
     LOGGER_INFO("Login to Teamcenter success as %s", usr);
+
+    user = _strdup(usr);
 
     // Test
     ::testing::InitGoogleTest(&argc, argv);

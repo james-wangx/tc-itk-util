@@ -36,7 +36,7 @@ function(configure_target_common target_name)
     )
 
     if (MSVC)
-        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4099 /wd4199 /wd4819)
+        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4099 /wd4199 /wd4819 /wd4267)
 
         set_target_properties(${target_name} PROPERTIES
                 LINK_FLAGS "/SUBSYSTEM:CONSOLE /MACHINE:X64"
@@ -68,7 +68,8 @@ include(GoogleTest)
 
 add_executable(tc_itk_util tests/test.cpp
         tests/item_util_test.cpp src/item_util.cpp
-        tests/session_util_test.cpp src/session_util.cpp)
+        tests/session_util_test.cpp src/session_util.cpp
+        tests/qry_util_test.cpp src/qry_util.cpp)
 configure_target_common(tc_itk_util)
 
 add_executable(item_util_test tests/test.cpp
