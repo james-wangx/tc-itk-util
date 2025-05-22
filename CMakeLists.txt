@@ -61,10 +61,18 @@ function(configure_target_common target_name)
     target_link_directories(${target_name} PRIVATE "$ENV{TC2412_ROOT}/lib")
 
     file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
-    target_link_libraries(${target_name} PRIVATE ${LIB_FILES})
+    target_link_libraries(${target_name} PRIVATE ${LIB_FILES} gtest)
 endfunction()
 
 include(GoogleTest)
+
+add_executable(tc_itk_util tests/test.cpp
+        tests/item_util_test.cpp src/item_util.cpp
+        tests/session_util_test.cpp src/session_util.cpp)
+configure_target_common(tc_itk_util)
+
 add_executable(item_util_test tests/test.cpp tests/item_util_test.cpp src/item_util.cpp)
-target_link_libraries(item_util_test PRIVATE gtest)
 configure_target_common(item_util_test)
+
+add_executable(session_util_test tests/test.cpp tests/session_util_test.cpp src/session_util.cpp)
+configure_target_common(session_util_test)

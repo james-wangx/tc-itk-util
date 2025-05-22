@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "item_util.hpp"
-
 #include <tc/tc_startup.h>
 
-// Demonstrate some basic assertions.
+#include "item_util.hpp"
+
 TEST(item_util_test, ITEM_UTIL_get_latest_released_revision) {
     int rcode = ITK_ok;
     const auto item_uid = "QEqhi$pvJ72RwB";

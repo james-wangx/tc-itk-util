@@ -1,5 +1,6 @@
 #ifndef ITEM_UTIL_HPP
 #define ITEM_UTIL_HPP
+
 #include <unidefs.h>
 
 /**
@@ -16,4 +17,4 @@
  */
 int ITEM_UTIL_get_latest_released_revision(tag_t item_tag, const char *status_name, tag_t *revision_tag);
 
-#endif // ITEM_UTIL_HPP
+#endif // !ITEM_UTIL_HPP

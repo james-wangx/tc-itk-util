@@ -1,23 +1,27 @@
 #ifndef MEM_UTIL_HPP
 #define MEM_UTIL_HPP
 
+#ifdef EXPORTLIBRARY
+#undef EXPORTLIBRARY
+#endif
+
 #include <base_utils/Mem.h>
 
 /**
- * @brief Safely frees a memory pointer and sets it to NULL.
+ * @brief Macro to free memory and set pointer to nullptr.
  *
- * This macro checks if the given pointer is not NULL, then frees the memory
- * using MEM_free and sets the pointer to NULL to avoid dangling pointers.
+ * This macro checks if the pointer is not null before freeing it,
+ * and then sets the pointer to nullptr to avoid dangling pointers.
  *
- * @param ptr The pointer to be freed.
+ * @param ptr Pointer to be freed.
  */
 #define MEM_UTIL_FREE(ptr)  \
 {                           \
     if(ptr)                 \
     {                       \
         MEM_free(ptr);      \
-        ptr = NULL;         \
+        ptr = nullptr;      \
     }                       \
-}                           \
+}
 
 #endif // !MEM_UTIL_HPP
