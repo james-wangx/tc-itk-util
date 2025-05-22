@@ -71,8 +71,10 @@ add_executable(tc_itk_util tests/test.cpp
         tests/session_util_test.cpp src/session_util.cpp)
 configure_target_common(tc_itk_util)
 
-add_executable(item_util_test tests/test.cpp tests/item_util_test.cpp src/item_util.cpp)
+add_executable(item_util_test tests/test.cpp
+        tests/item_util_test.cpp src/item_util.cpp)
 configure_target_common(item_util_test)
 
-add_executable(session_util_test tests/test.cpp tests/session_util_test.cpp src/session_util.cpp)
+add_executable(session_util_test tests/test.cpp
+        tests/session_util_test.cpp src/session_util.cpp)
 configure_target_common(session_util_test)
