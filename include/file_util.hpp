@@ -18,6 +18,6 @@
         fclose(file);           \
         file = NULL;            \
     }                           \
-}                               \
+}
 
 #endif // !FILE_UTIL_HPP

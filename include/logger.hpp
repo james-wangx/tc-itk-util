@@ -14,45 +14,45 @@
 
 #include "mem_util.hpp"
 
-/**  
- * @brief Log info message  
- *  
- * This macro logs an info message using the specified format and arguments.  
- * It logs the message to both the console and the system log.  
- *  
- * @param fmt The format string for the log message.  
- * @param ... The arguments for the format string.  
- */  
+/**
+ * @brief Log info message
+ *
+ * This macro logs an info message using the specified format and arguments.
+ * It logs the message to both the console and the system log.
+ *
+ * @param fmt The format string for the log message.
+ * @param ... The arguments for the format string.
+ */
 #define LOGGER_INFO(fmt, ...)                           \
 {                                                       \
     TC_printf("INFO  - " fmt "\n", ##__VA_ARGS__);      \
     TC_write_syslog("INFO  - " fmt "\n", ##__VA_ARGS__);\
-}                                                       \
+}
 
-/**  
- * @brief Log warning message  
- *  
- * This macro logs a warning message using the specified format and arguments.  
- * It logs the message to both the console and the system log.  
- *  
- * @param fmt The format string for the log message.  
- * @param ... The arguments for the format string.  
- */  
+/**
+ * @brief Log warning message
+ *
+ * This macro logs a warning message using the specified format and arguments.
+ * It logs the message to both the console and the system log.
+ *
+ * @param fmt The format string for the log message.
+ * @param ... The arguments for the format string.
+ */
 #define LOGGER_WARN(fmt, ...)                           \
 {                                                       \
     TC_printf("WARN  - " fmt "\n", ##__VA_ARGS__);      \
     TC_write_syslog("WARN  - " fmt "\n", ##__VA_ARGS__);\
-}                                                       \
+}
 
-/**  
- * @brief Log debug message  
- *  
- * This macro logs a debug message using the specified format and arguments.  
- * It logs the message to both the console and the system log if the debug flag is set.  
- *  
- * @param fmt The format string for the log message.  
- * @param ... The arguments for the format string.  
- */  
+/**
+ * @brief Log debug message
+ *
+ * This macro logs a debug message using the specified format and arguments.
+ * It logs the message to both the console and the system log if the debug flag is set.
+ *
+ * @param fmt The format string for the log message.
+ * @param ... The arguments for the format string.
+ */
 #define LOGGER_DEBUG(fmt, ...)                              \
 {                                                           \
     if (debug)                                              \
@@ -60,22 +60,22 @@
         TC_printf("DEBUG - " fmt "\n", ##__VA_ARGS__);      \
         TC_write_syslog("DEBUG - " fmt "\n", ##__VA_ARGS__);\
     }                                                       \
-}                                                           \
+}
 
-/**  
- * @brief Log error message  
- *  
- * This macro logs an error message using the specified format and arguments.  
- * It logs the message to both the console and the system log.  
- *  
- * @param fmt The format string for the log message.  
- * @param ... The arguments for the format string.  
- */  
+/**
+ * @brief Log error message
+ *
+ * This macro logs an error message using the specified format and arguments.
+ * It logs the message to both the console and the system log.
+ *
+ * @param fmt The format string for the log message.
+ * @param ... The arguments for the format string.
+ */
 #define LOGGER_ERROR(fmt, ...)                          \
 {                                                       \
     TC_printf("ERROR - " fmt "\n", ##__VA_ARGS__);      \
     TC_write_syslog("ERROR - " fmt "\n", ##__VA_ARGS__);\
-}                                                       \
+}
 
 /**
  * @brief Log itk call and goto CLEANUP after log error message
@@ -98,7 +98,7 @@
         MEM_UTIL_FREE(error);                                               \
         goto CLEANUP;                                                       \
     }                                                                       \
-}                                                                           \
+}
 
 /**
  * @brief Log itk call and log error message without goto CLEANUP
@@ -119,7 +119,7 @@
         LOGGER_ERROR("Found error code: %d, message: %s\n", rcode, error);  \
         MEM_UTIL_FREE(error);                                               \
     }                                                                       \
-}                                                                           \
+}
 
 /**
  * @brief Log custom call and goto CLEANUP without log error message
@@ -137,7 +137,7 @@
     {                                                               \
         goto CLEANUP;                                               \
     }                                                               \
-}                                                                   \
+}
 
 /**
  * @brief Log custom call without goto CLEANUP
@@ -152,7 +152,7 @@
 {                                                                   \
     LOGGER_DEBUG("Call %s; at %s:%d", #func, __FILE__, __LINE__);   \
     rcode = func;                                                   \
-}                                                                   \
+}
 
 /**
  * @brief Log register call and goto CLEANUP after log error message
@@ -181,7 +181,7 @@
         MEM_UTIL_FREE(error);                                               \
         goto CLEANUP;                                                       \
     }                                                                       \
-}                                                                           \
+}
 
 /**
  * @brief Log register call and error message without goto CLEANUP
@@ -209,6 +209,6 @@
         LOGGER_ERROR("Found error code: %d, message: %s\n", rcode, error);  \
         MEM_UTIL_FREE(error);                                               \
     }                                                                       \
-}                                                                           \
+}
 
 #endif // !LOGGER_HPP
