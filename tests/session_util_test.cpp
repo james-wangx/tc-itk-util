@@ -4,7 +4,6 @@
 
 #include "session_util.hpp"
 #include "logger.hpp"
-
 #include "mem_util.hpp"
 
 extern logical debug;
@@ -66,11 +65,20 @@ TEST(session_util_test, SESSION_UTIL_get_session) {
 
 TEST(session_util_test, SESSION_UTIL_get_fms_home) {
     int rcode = ITK_ok;
-    char *fms_home = nullptr;
+    std::string fms_home;
 
-    rcode = SESSION_UTIL_get_fms_home(&fms_home);
+    rcode = SESSION_UTIL_get_fms_home(fms_home);
     EXPECT_EQ(rcode, ITK_ok) << "Failed to get FMS_HOME";
-    EXPECT_NE(fms_home, nullptr) << "FMS_HOME is NULL";
+    EXPECT_EQ(fms_home, std::string("D:\\Siemens\\Teamcenter2412FourTier\\tccs"))
+    << "fms_home: " << fms_home << ", expected: D:\\Siemens\\Teamcenter2412FourTier\\tccs";
+}
 
-    MEM_UTIL_FREE_CST(fms_home);
+TEST(session_util_test, SESSION_UTIL_get_tc_root) {
+    int rcode = ITK_ok;
+    std::string tc_root;
+
+    rcode = SESSION_UTIL_get_tc_root(tc_root);
+    EXPECT_EQ(rcode, ITK_ok) << "Failed to get TC_ROOT";
+    EXPECT_EQ(tc_root, std::string("D:\\Siemens\\Teamcenter2412FourTier"))
+    << "tc_root: " << tc_root << ", expected: D:\\Siemens\\Teamcenter2412FourTier";
 }

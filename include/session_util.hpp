@@ -24,6 +24,8 @@ int SESSION_UTIL_get_worklist(tag_t *worklist_tag);
 
 int SESSION_UTIL_get_session(tag_t *session_tag);
 
-int SESSION_UTIL_get_fms_home(char **fms_home);
+int SESSION_UTIL_get_fms_home(std::string &fms_home);
+
+int SESSION_UTIL_get_tc_root(std::string &tc_root);
 
 #endif // !SESSION_UTIL_HPP

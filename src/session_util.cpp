@@ -27,7 +27,7 @@ CLEANUP:
     return rcode;
 }
 
-int SESSION_UTIL_get_fms_home(char **fms_home) {
+int SESSION_UTIL_get_fms_home(std::string &fms_home) {
     int rcode = ITK_ok;
 
     const char *fms_home_temp = TC_getenv("FMS_HOME");
@@ -37,7 +37,20 @@ int SESSION_UTIL_get_fms_home(char **fms_home) {
         goto CLEANUP;
     }
 
-    *fms_home = _strdup(fms_home_temp);
+    fms_home = fms_home_temp;
+
+CLEANUP:
+    return rcode;
+}
+
+int SESSION_UTIL_get_tc_root(std::string &tc_root) {
+    int rcode = ITK_ok;
+    std::string fms_home;
+
+    LOGGER_CST_GOTO(SESSION_UTIL_get_fms_home(fms_home));
+    if (const size_t pos = fms_home.rfind("\\"); pos != std::string::npos) {
+        tc_root = fms_home.substr(0, pos);
+    }
 
 CLEANUP:
     return rcode;
