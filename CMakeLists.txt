@@ -20,14 +20,6 @@ include_directories(
         $ENV{TC2412_ROOT}/include_cpp
 )
 
-set(SOURCES
-        src/dispatcher_util.cpp
-        src/ics_util.cpp
-        src/nr_util.cpp
-        src/item_util.cpp
-        src/main.cpp
-)
-
 function(configure_target_common target_name)
     target_compile_definitions(${target_name} PRIVATE
             NT40
@@ -71,9 +63,6 @@ function(configure_target_common target_name)
     file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
     target_link_libraries(${target_name} PRIVATE ${LIB_FILES})
 endfunction()
-
-add_executable(tc_itk_util ${SOURCES})
-configure_target_common(tc_itk_util)
 
 include(GoogleTest)
 add_executable(item_util_test tests/test.cpp tests/item_util_test.cpp src/item_util.cpp)

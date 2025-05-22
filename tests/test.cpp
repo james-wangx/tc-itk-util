@@ -10,6 +10,7 @@ logical debug = false;
 
 int ITK_user_main(int argc, char **argv) {
     int rcode = ITK_ok;
+    int gtest_rcode = 0;
 
     // Get args
     const char *usr = ITK_ask_cli_argument("-u=");
@@ -32,8 +33,10 @@ int ITK_user_main(int argc, char **argv) {
     LOGGER_ITK_GOTO(ITK_init_module(usr, upw, ugp));
     LOGGER_INFO("Login to Teamcenter success as %s", usr);
 
+    // Test
     ::testing::InitGoogleTest(&argc, argv);
-    RUN_ALL_TESTS();
+    gtest_rcode = RUN_ALL_TESTS();
+    LOGGER_INFO("gtest rcode = %d", gtest_rcode);
 
 CLEANUP:
     LOGGER_ITK_PASS(ITK_exit_module(false));
