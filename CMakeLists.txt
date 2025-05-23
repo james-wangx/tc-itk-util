@@ -20,7 +20,51 @@ include_directories(
         $ENV{TC2412_ROOT}/include_cpp
 )
 
-function(configure_target_common target_name)
+file(GLOB SOURCES src/*.cpp)
+
+function(configure_library target_name)
+    target_compile_definitions(${target_name} PRIVATE
+            NT40
+            POMDLL
+            CRTAPI1=_cdecl
+            CRTAPI2=cdecl
+            _WIN32
+            WIN64
+            WIN32_LEAN_AND_MEAN
+            WNT
+            BYPASS_FLEX
+            _INTEL=1
+            IPLIB=none
+    )
+
+    if (MSVC)
+        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4099 /wd4199 /wd4819 /wd4267)
+
+        set_target_properties(${target_name} PROPERTIES
+                LINK_FLAGS "/SUBSYSTEM:CONSOLE /MACHINE:X64"
+        )
+
+        target_link_options(${target_name} PRIVATE
+                "/DELAYLOAD:libtcsso.dll"
+                "/DELAYLOAD:libict.dll"
+        )
+    endif ()
+
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_definitions(${target_name} PRIVATE DEBUG)
+    endif ()
+
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_definitions(${target_name} PRIVATE NDEBUG)
+    endif ()
+
+    target_link_directories(${target_name} PRIVATE "$ENV{TC2412_ROOT}/lib")
+
+    file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
+    target_link_libraries(${target_name} PRIVATE ${LIB_FILES})
+endfunction()
+
+function(configure_executable target_name)
     target_compile_definitions(${target_name} PRIVATE
             NT40
             POMDLL
@@ -61,25 +105,33 @@ function(configure_target_common target_name)
     target_link_directories(${target_name} PRIVATE "$ENV{TC2412_ROOT}/lib")
 
     file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
-    target_link_libraries(${target_name} PRIVATE ${LIB_FILES} gtest)
+    target_link_libraries(${target_name} PRIVATE ${LIB_FILES} gtest libtcitkutil)
 endfunction()
+
+add_library(libtcitkutil STATIC ${SOURCES})
+configure_library(libtcitkutil)
 
 include(GoogleTest)
 
-add_executable(tc_itk_util tests/test.cpp
-        tests/item_util_test.cpp src/item_util.cpp
-        tests/session_util_test.cpp src/session_util.cpp
-        tests/qry_util_test.cpp src/qry_util.cpp)
-configure_target_common(tc_itk_util)
+add_executable(tc_itk_util_test
+        tests/test.cpp
+        tests/item_util_test.cpp
+        tests/session_util_test.cpp
+        tests/qry_util_test.cpp
+        ${SOURCES})
+configure_executable(tc_itk_util_test)
 
-add_executable(item_util_test tests/test.cpp
-        tests/item_util_test.cpp src/item_util.cpp)
-configure_target_common(item_util_test)
+add_executable(item_util_test
+        tests/test.cpp
+        tests/item_util_test.cpp)
+configure_executable(item_util_test)
 
-add_executable(session_util_test tests/test.cpp
-        tests/session_util_test.cpp src/session_util.cpp src/qry_util.cpp)
-configure_target_common(session_util_test)
+add_executable(session_util_test
+        tests/test.cpp
+        tests/session_util_test.cpp)
+configure_executable(session_util_test)
 
-add_executable(qry_util_test tests/test.cpp
-        tests/qry_util_test.cpp src/qry_util.cpp)
-configure_target_common(qry_util_test)
+add_executable(qry_util_test
+        tests/test.cpp
+        tests/qry_util_test.cpp)
+configure_executable(qry_util_test)
