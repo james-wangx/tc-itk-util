@@ -69,8 +69,8 @@ TEST(session_util_test, SESSION_UTIL_get_fms_home) {
 
     rcode = SESSION_UTIL_get_fms_home(fms_home);
     EXPECT_EQ(rcode, ITK_ok) << "Failed to get FMS_HOME";
-    EXPECT_EQ(fms_home, std::string("D:\\Siemens\\Teamcenter2412FourTier\\tccs"))
-    << "fms_home: " << fms_home << ", expected: D:\\Siemens\\Teamcenter2412FourTier\\tccs";
+    EXPECT_EQ(fms_home, std::string(R"(D:\Siemens\Teamcenter2412FourTier\tccs)"))
+    << "fms_home: " << fms_home << R"(, expected: D:\Siemens\Teamcenter2412FourTier\tccs)";
 }
 
 TEST(session_util_test, SESSION_UTIL_get_tc_root) {
@@ -79,8 +79,8 @@ TEST(session_util_test, SESSION_UTIL_get_tc_root) {
 
     rcode = SESSION_UTIL_get_tc_root(tc_root);
     EXPECT_EQ(rcode, ITK_ok) << "Failed to get TC_ROOT";
-    EXPECT_EQ(tc_root, std::string("D:\\Siemens\\Teamcenter2412FourTier"))
-    << "tc_root: " << tc_root << ", expected: D:\\Siemens\\Teamcenter2412FourTier";
+    EXPECT_EQ(tc_root, std::string(R"(D:\Siemens\Teamcenter2412FourTier)"))
+    << "tc_root: " << tc_root << R"(, expected: D:\Siemens\Teamcenter2412FourTier)";
 }
 
 TEST(session_util_test, SESSION_UTIL_get_tc_bin) {
@@ -89,8 +89,8 @@ TEST(session_util_test, SESSION_UTIL_get_tc_bin) {
 
     rcode = SESSION_UTIL_get_tc_bin(tc_bin);
     EXPECT_EQ(rcode, ITK_ok) << "Failed to get TC_BIN";
-    EXPECT_EQ(tc_bin, std::string("D:\\Siemens\\Teamcenter2412FourTier\\bin"))
-    << "tc_bin: " << tc_bin << ", expected: D:\\Siemens\\Teamcenter2412FourTier\\bin";
+    EXPECT_EQ(tc_bin, std::string(R"(D:\Siemens\Teamcenter2412FourTier\bin)"))
+    << "tc_bin: " << tc_bin << R"(, expected: D:\Siemens\Teamcenter2412FourTier\bin)";
 }
 
 TEST(session_util_test, SESSION_UTIL_get_current_user) {

@@ -1,4 +1,5 @@
 #include <tccore/item.h>
+#include <base_utils/ResultCheck.hxx>
 #include <tccore/aom.h>
 #include <tccore/aom_prop.h>
 #include <fclasses/tc_string.h>

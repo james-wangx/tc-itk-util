@@ -42,6 +42,7 @@ int ITK_user_main(int argc, char **argv) {
     LOGGER_INFO("gtest rcode = %d", gtest_rcode);
 
 CLEANUP:
+    MEM_UTIL_FREE_CST(user);
     LOGGER_ITK_PASS(ITK_exit_module(false));
     return rcode;
 }

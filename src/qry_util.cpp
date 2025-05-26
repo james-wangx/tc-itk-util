@@ -45,12 +45,8 @@ int QRY_UTIL_query_one(const char *name, std::map<std::string, std::string> &par
 
 CLEANUP:
     for (int i = 0; i < params.size(); i++) {
-        if (entries[i]) {
-            free(entries[i]);
-        }
-        if (values[i]) {
-            free(values[i]);
-        }
+        MEM_UTIL_FREE_CST(entries[i]);
+        MEM_UTIL_FREE_CST(values[i]);
     }
     delete[] entries;
     delete[] values;
