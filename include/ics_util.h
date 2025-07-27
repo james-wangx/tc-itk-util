@@ -16,8 +16,8 @@
  * @param wso_uids Pointer to an array of strings to store the WSO UIDs.
  * @return int Status code of the operation.
  */
-int ICS_UTIL_search_ico(const char* class_id, int* ico_count, tag_t** ico_tags, char*** ico_uids, char*** ico_ids,
-    char*** class_ids, tag_t** wso_tags, char*** wso_uids);
+int ICS_UTIL_search_ico(const char *class_id, int *ico_count, tag_t **ico_tags, char ***ico_uids, char ***ico_ids,
+                        char ***class_ids, tag_t **wso_tags, char ***wso_uids);
 
 /**
  * @brief Retrieves the class structure associated with the given class ID.
@@ -25,7 +25,7 @@ int ICS_UTIL_search_ico(const char* class_id, int* ico_count, tag_t** ico_tags, 
  * @param class_id The class ID to retrieve the structure for.
  * @return int Status code of the operation.
  */
-int ICS_UTIL_get_struct(const char* class_id);
+int ICS_UTIL_get_struct(const char *class_id);
 
 /**
  * @brief Retrieves the class attributes of a given ICO tag.
@@ -36,6 +36,6 @@ int ICS_UTIL_get_struct(const char* class_id);
  * @param attr_values Pointer to an array of strings to store the attribute values.
  * @return int Status code of the operation.
  */
-int ICS_UTIL_get_class_attr(const tag_t ico_tag, int* attr_count, char*** attr_names, char*** attr_values);
+int ICS_UTIL_get_class_attr(tag_t ico_tag, int *attr_count, char ***attr_names, char ***attr_values);
 
 #endif // !ICS_UTIL_HPP

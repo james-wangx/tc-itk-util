@@ -8,10 +8,10 @@
 #include <base_utils/Mem.h>
 
 /**
- * @brief Macro to free memory and set pointer to nullptr.
+ * @brief Macro to free memory and set pointer to NULL.
  *
  * This macro checks if the pointer is not null before freeing it,
- * and then sets the pointer to nullptr to avoid dangling pointers.
+ * and then sets the pointer to NULL to avoid dangling pointers.
  *
  * @param ptr Pointer to be freed.
  */
@@ -20,15 +20,15 @@
     if(ptr)                     \
     {                           \
         MEM_free(ptr);          \
-        ptr = nullptr;          \
+        ptr = NULL;             \
     }                           \
 }
 
 /**
- * @brief Macro to free memory and set pointer to nullptr.
+ * @brief Macro to free memory and set pointer to NULL.
  *
  * This macro checks if the pointer is not null before freeing it,
- * and then sets the pointer to nullptr to avoid dangling pointers.
+ * and then sets the pointer to NULL to avoid dangling pointers.
  *
  * @param ptr Pointer to be freed.
  */
@@ -37,7 +37,7 @@
     if(ptr)                     \
     {                           \
         free(ptr);              \
-        ptr = nullptr;          \
+        ptr = NULL;             \
     }                           \
 }
 

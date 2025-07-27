@@ -1,15 +1,16 @@
 #include <fclasses/tc_string.h>
-#include <tcinit/tcinit.h>
 #include <gtest/gtest.h>
+#include <tcinit/tcinit.h>
 
-#include "logger.hpp"
+#include "logger.h"
 
 constexpr int WRONG_USAGE = 100001;
 
 logical debug = false;
 char *user = nullptr;
 
-int ITK_user_main(int argc, char **argv) {
+int ITK_user_main(int argc, char **argv)
+{
     int rcode = ITK_ok;
     int gtest_rcode = 0;
 
@@ -20,12 +21,14 @@ int ITK_user_main(int argc, char **argv) {
     const char *dbg = ITK_ask_cli_argument("-d=");
     const char *help = ITK_ask_cli_argument("-h=");
 
-    if (!usr || !upw || !ugp || help) {
-        LOGGER_INFO("USAGE: utility -u=user -p=password -g=group");
+    if (!usr || !upw || !ugp || help)
+    {
+        LOGGER_ERROR("USAGE: utility -u=user -p=password -g=group");
         return WRONG_USAGE;
     }
 
-    if (tc_strcmp(dbg, "true") == 0) {
+    if (tc_strcmp(dbg, "true") == 0)
+    {
         debug = true;
     }
 
@@ -37,7 +40,7 @@ int ITK_user_main(int argc, char **argv) {
     user = _strdup(usr);
 
     // Test
-    ::testing::InitGoogleTest(&argc, argv);
+    testing::InitGoogleTest(&argc, argv);
     gtest_rcode = RUN_ALL_TESTS();
     LOGGER_INFO("gtest rcode = %d", gtest_rcode);
 

@@ -2,9 +2,9 @@
 
 #include <tccore/aom_prop.h>
 
-#include "session_util.hpp"
-#include "logger.hpp"
-#include "mem_util.hpp"
+#include "session_util.h"
+#include "logger.h"
+#include "mem_util.h"
 
 extern logical debug;
 

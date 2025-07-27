@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.31)
-project(tc_itk_util)
+project(tc_itk_util LANGUAGES C CXX)
 
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
@@ -14,13 +16,15 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+find_package(CURL REQUIRED)
+
 include_directories(
         include
         $ENV{TC2412_ROOT}/include
         $ENV{TC2412_ROOT}/include_cpp
 )
 
-file(GLOB SOURCES src/*.cpp)
+file(GLOB SOURCES src/*.c src/*.cpp)
 
 function(configure_library target_name)
     target_compile_definitions(${target_name} PRIVATE
@@ -61,7 +65,7 @@ function(configure_library target_name)
     target_link_directories(${target_name} PRIVATE "$ENV{TC2412_ROOT}/lib")
 
     file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
-    target_link_libraries(${target_name} PRIVATE ${LIB_FILES})
+    target_link_libraries(${target_name} PRIVATE ${LIB_FILES} CURL::libcurl)
 endfunction()
 
 function(configure_executable target_name)
