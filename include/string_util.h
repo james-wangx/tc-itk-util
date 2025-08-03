@@ -7,6 +7,8 @@ int STRING_UTIL_duplicate(const char *source, char **duplicate);
 
 int STRING_UTIL_is_empty(const char *string);
 
+int STRING_UTIL_index_of(const char *str, char ch, size_t *index);
+
 int STRING_UTIL_last_index_of(const char *str, char ch, size_t *index);
 
 int STRING_UTIL_substring(const char *str, size_t start, size_t end, char **result);

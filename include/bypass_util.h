@@ -1,11 +1,11 @@
-#ifndef BYPASS_UTIL_HPP
-#define BYPASS_UTIL_HPP
+#ifndef BYPASS_UTIL_H
+#define BYPASS_UTIL_H
 
 #include <unidefs.h>
 
 extern "C"
 {
-    int POM_AM__ask_application_bypass(logical* has_bypass);
+    int POM_AM__ask_application_bypass(logical *has_bypass);
 
     int POM_AM__set_application_bypass(logical bypass);
 
@@ -14,4 +14,4 @@ extern "C"
     int RIL_applic_protection(logical bypass);
 }
 
-#endif // !BYPASS_UTIL_HPP
+#endif // !BYPASS_UTIL_H

@@ -88,7 +88,7 @@ int DATASET_UTIL_create(const tag_t rev_tag, const char *dataset_type_name, cons
 
     LOGGER_ITK_GOTO(AE_find_datasettype2(dataset_type_name, &dataset_type));
     LOGGER_ITK_GOTO(AE_create_dataset_with_id(dataset_type, dataset_name, "", NULL, NULL, dataset_tag));
-    LOGGER_ITK_GOTO(AOM_save(*dataset_tag));
+    LOGGER_ITK_GOTO(AOM_save_with_extensions(*dataset_tag));
     LOGGER_ITK_GOTO(AOM_lock(rev_tag));
     LOGGER_ITK_GOTO(GRM_find_relation_type(relation_type_name, &relation_type));
     LOGGER_ITK_GOTO(GRM_create_relation(rev_tag, *dataset_tag, relation_type, NULLTAG, &relation_tag));
@@ -110,7 +110,7 @@ int DATASET_UTIL_upload(const tag_t dataset_tag, const char *file_path, const in
 
     LOGGER_ITK_GOTO(IMF_import_file(file_path, NULL, file_type, &file_tag, &file_descriptor));
     LOGGER_ITK_GOTO(IMF_close_file(file_descriptor));
-    LOGGER_ITK_GOTO(AOM_save(file_tag));
+    LOGGER_ITK_GOTO(AOM_save_with_extensions(file_tag));
     AOM_unlock(file_tag);
     LOGGER_ITK_GOTO(AOM_lock(dataset_tag));
     LOGGER_ITK_GOTO(AE_add_dataset_named_ref2(dataset_tag, reference_name, AE_PART_OF, file_tag));

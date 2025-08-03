@@ -15,14 +15,14 @@
  *
  * @param ptr Pointer to be freed.
  */
-#define MEM_UTIL_FREE_ITK(ptr)  \
-{                               \
-    if(ptr)                     \
-    {                           \
-        MEM_free(ptr);          \
-        ptr = NULL;             \
-    }                           \
-}
+#define MEM_UTIL_FREE_ITK(ptr)                                                                                         \
+    {                                                                                                                  \
+        if (ptr)                                                                                                       \
+        {                                                                                                              \
+            MEM_free(ptr);                                                                                             \
+            ptr = NULL;                                                                                                \
+        }                                                                                                              \
+    }
 
 /**
  * @brief Macro to free memory and set pointer to NULL.
@@ -32,13 +32,13 @@
  *
  * @param ptr Pointer to be freed.
  */
-#define MEM_UTIL_FREE_CST(ptr)  \
-{                               \
-    if(ptr)                     \
-    {                           \
-        free(ptr);              \
-        ptr = NULL;             \
-    }                           \
-}
+#define MEM_UTIL_FREE_CST(ptr)                                                                                         \
+    {                                                                                                                  \
+        if (ptr)                                                                                                       \
+        {                                                                                                              \
+            free(ptr);                                                                                                 \
+            ptr = NULL;                                                                                                \
+        }                                                                                                              \
+    }
 
 #endif // !MEM_UTIL_HPP

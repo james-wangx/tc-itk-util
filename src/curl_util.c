@@ -7,10 +7,10 @@
 
 extern logical debug;
 
-static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
+static size_t write_callback(const void *contents, const size_t size, const size_t nmemb, void *userp)
 {
-    size_t total_size = size * nmemb;
-    strncat((char *)userp, (char *)contents, total_size);
+    const size_t total_size = size * nmemb;
+    strncat_s(userp, sizeof(userp), contents, total_size);
     return total_size;
 }
 
@@ -19,8 +19,6 @@ int CURL_UTIL_post(const char *url, const char *body, char **response)
     int rcode = ITK_ok;
 
     CURL *curl = NULL;
-
-    CURLcode res;
 
     struct curl_slist *headers = NULL;
 
@@ -42,7 +40,7 @@ int CURL_UTIL_post(const char *url, const char *body, char **response)
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, buf);
 
-        res = curl_easy_perform(curl);
+        const CURLcode res = curl_easy_perform(curl);
         if (res != CURLE_OK)
         {
             STRING_UTIL_append(&msg, &msg_len, "curl_easy_perform() failed: ");

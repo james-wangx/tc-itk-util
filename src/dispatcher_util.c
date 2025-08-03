@@ -1,5 +1,6 @@
-#include <dispatcher/dispatcher_itk.h>
 #include <unidefs.h>
+
+#include <dispatcher/dispatcher_itk.h>
 
 #include "dispatcher_util.h"
 #include "logger.h"

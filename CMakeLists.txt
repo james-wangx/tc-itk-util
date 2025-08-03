@@ -65,6 +65,7 @@ function(configure_library target_name)
     target_link_directories(${target_name} PRIVATE "$ENV{TC2412_ROOT}/lib")
 
     file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
+    #    target_include_directories(${target_name} PRIVATE ${CURL_INCLUDE_DIRS})
     target_link_libraries(${target_name} PRIVATE ${LIB_FILES} CURL::libcurl)
 endfunction()
 
@@ -109,7 +110,7 @@ function(configure_executable target_name)
     target_link_directories(${target_name} PRIVATE "$ENV{TC2412_ROOT}/lib")
 
     file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
-    target_link_libraries(${target_name} PRIVATE ${LIB_FILES} gtest libtcitkutil)
+    target_link_libraries(${target_name} PRIVATE ${LIB_FILES} gtest libtcitkutil CURL::libcurl)
 endfunction()
 
 add_library(libtcitkutil STATIC ${SOURCES})

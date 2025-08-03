@@ -62,6 +62,25 @@ int STRING_UTIL_is_empty(const char *string)
     return string == NULL || tc_strlen(string) == 0;
 }
 
+int STRING_UTIL_index_of(const char *str, const char ch, size_t *index)
+{
+    int rcode = ITK_ok;
+
+    const char *p = strchr(str, ch);
+    if (p == NULL)
+    {
+        *index = -1;
+        LOGGER_ERROR("Not found character '%c' in string: %s", ch, str);
+        rcode = -1;
+        goto CLEANUP;
+    }
+
+    *index = p - str;
+
+CLEANUP:
+    return rcode;
+}
+
 int STRING_UTIL_last_index_of(const char *str, const char ch, size_t *index)
 {
     int rcode = ITK_ok;

@@ -5,7 +5,7 @@
 
 /**
  * @brief Searches for ICOs based on the provided class ID.
- * 
+ *
  * @param class_id The class ID to search for.
  * @param ico_count Pointer to an integer to store the count of ICOs found.
  * @param ico_tags Pointer to an array of tags to store the ICO tags.
@@ -21,7 +21,7 @@ int ICS_UTIL_search_ico(const char *class_id, int *ico_count, tag_t **ico_tags, 
 
 /**
  * @brief Retrieves the class structure associated with the given class ID.
- * 
+ *
  * @param class_id The class ID to retrieve the structure for.
  * @return int Status code of the operation.
  */
@@ -29,7 +29,7 @@ int ICS_UTIL_get_struct(const char *class_id);
 
 /**
  * @brief Retrieves the class attributes of a given ICO tag.
- * 
+ *
  * @param ico_tag The ICO tag to retrieve attributes for.
  * @param attr_count Pointer to an integer to store the count of attributes.
  * @param attr_names Pointer to an array of strings to store the attribute names.
