@@ -20,7 +20,8 @@ int QRY_UTIL_query_one(const char *name, const int entries_count, const char **e
         goto CLEANUP;
     }
 
-    LOGGER_ITK_GOTO(QRY_execute(query_tag, entries_count, entries, values, &result_count, &result_tags));
+    LOGGER_ITK_GOTO(QRY_execute(query_tag, entries_count, const_cast<char **>(entries), const_cast<char **>(values),
+                                &result_count, &result_tags));
     if (result_count == 0)
     {
         LOGGER_WARN("Found no results");

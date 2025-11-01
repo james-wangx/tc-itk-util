@@ -10,7 +10,7 @@ extern logical debug;
 static size_t write_callback(const void *contents, const size_t size, const size_t nmemb, void *userp)
 {
     const size_t total_size = size * nmemb;
-    strncat_s(userp, sizeof(userp), contents, total_size);
+    strncat_s(static_cast<char *>(userp), sizeof(userp), static_cast<const char *>(contents), total_size);
     return total_size;
 }
 

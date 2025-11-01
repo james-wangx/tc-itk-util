@@ -1,9 +1,7 @@
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 4.0.2)
 project(tc_itk_util LANGUAGES C CXX)
 
-set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
@@ -24,34 +22,15 @@ include_directories(
         $ENV{TC2412_ROOT}/include_cpp
 )
 
-file(GLOB SOURCES src/*.c src/*.cpp)
+file(GLOB SOURCES src/*.cpp)
 
 function(configure_library target_name)
     target_compile_definitions(${target_name} PRIVATE
-            NT40
-            POMDLL
-            CRTAPI1=_cdecl
-            CRTAPI2=cdecl
-            _WIN32
-            WIN64
-            WIN32_LEAN_AND_MEAN
-            WNT
-            BYPASS_FLEX
-            _INTEL=1
             IPLIB=none
     )
 
     if (MSVC)
         target_compile_options(${target_name} PRIVATE /W3 /MD /wd4099 /wd4199 /wd4819 /wd4267)
-
-        set_target_properties(${target_name} PROPERTIES
-                LINK_FLAGS "/SUBSYSTEM:CONSOLE /MACHINE:X64"
-        )
-
-        target_link_options(${target_name} PRIVATE
-                "/DELAYLOAD:libtcsso.dll"
-                "/DELAYLOAD:libict.dll"
-        )
     endif ()
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -65,37 +44,16 @@ function(configure_library target_name)
     target_link_directories(${target_name} PRIVATE "$ENV{TC2412_ROOT}/lib")
 
     file(GLOB LIB_FILES "$ENV{TC2412_ROOT}/lib/*.lib")
-    #    target_include_directories(${target_name} PRIVATE ${CURL_INCLUDE_DIRS})
     target_link_libraries(${target_name} PRIVATE ${LIB_FILES} CURL::libcurl)
 endfunction()
 
 function(configure_executable target_name)
     target_compile_definitions(${target_name} PRIVATE
-            NT40
-            POMDLL
-            CRTAPI1=_cdecl
-            CRTAPI2=cdecl
-            _WIN32
-            WIN64
-            WIN32_LEAN_AND_MEAN
-            WNT
-            BYPASS_FLEX
-            _INTEL=1
             IPLIB=none
     )
 
     if (MSVC)
         target_compile_options(${target_name} PRIVATE /W3 /MD /wd4099 /wd4199 /wd4819 /wd4267)
-
-        set_target_properties(${target_name} PROPERTIES
-                LINK_FLAGS "/SUBSYSTEM:CONSOLE /MACHINE:X64"
-        )
-
-        target_link_options(${target_name} PRIVATE
-                "/DELAYLOAD:libtcsso.dll"
-                "/DELAYLOAD:libict.dll"
-        )
-
         target_link_options(${target_name} PRIVATE $ENV{TC2412_ROOT}/lib/itk_main.obj)
     endif ()
 

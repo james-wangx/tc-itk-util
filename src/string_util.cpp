@@ -14,7 +14,7 @@ int STRING_UTIL_append(char **buffer, size_t *buf_len, const char *to_append)
     const size_t old_len = *buf_len;
     const size_t new_len = old_len + append_len;
 
-    char *temp = MEM_realloc(*buffer, new_len + 1);
+    char *temp = static_cast<char *>(MEM_realloc(*buffer, new_len + 1));
     if (!temp)
     {
         return -1;
