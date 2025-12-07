@@ -1,10 +1,12 @@
 // ReSharper disable CppEntityAssignedButNoRead
 // ReSharper disable CppTooWideScope
+
 #include <base_utils/IFail.hxx>
 #include <base_utils/ScopedSmPtr.hxx>
 #include <base_utils/TcResultStatus.hxx>
 #include <mld/logging/Logger.hxx>
 
+#include <fclasses/tc_date.h>
 #include <pom/pom/pom.h>
 #include <ps/ps.h>
 #include <qry/qry.h>
@@ -169,6 +171,16 @@ bool TcUtil::checkType(const tag_t object, const std::string& typeName)
     LOGGER_ITK(AOM_ask_value_string(object, "object_type", &objectType));
 
     return typeName == objectType.get();
+}
+
+std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> formattedDatePtr;
+
+    DATE_date_to_string(date, formatSt.c_str(), &formattedDatePtr);
+
+    return formattedDatePtr.getString();
 }
 
 void TcUtil::deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType)
