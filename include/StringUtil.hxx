@@ -2,6 +2,7 @@
 #define TC_ITK_UTIL_STRINGUTIL_HXX
 
 #include <string>
+#include <vector>
 
 #include <Windows.h>
 #include <unidefs.h>
@@ -51,6 +52,15 @@ public:
      * @return utf-8 string
      */
     static std::string gbk2utf8(const std::string& gbk);
+
+    /**
+     * @brief split string by delimiter
+     *
+     * @param str input string
+     * @param delimiter delimiter string
+     * @return vector of split strings
+     */
+    static std::vector<std::string> split(const std::string& str, const std::string& delimiter);
 };
 
 #endif // TC_ITK_UTIL_STRINGUTIL_HXX

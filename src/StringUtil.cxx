@@ -63,3 +63,20 @@ std::string StringUtil::gbk2utf8(const std::string& gbk)
 
     return str;
 }
+
+std::vector<std::string> StringUtil::split(const std::string& str, const std::string& delimiter)
+{
+    std::vector<std::string> result;
+    size_t start = 0;
+    size_t pos = 0;
+
+    while ((pos = str.find(delimiter, start)) != std::string::npos)
+    {
+        result.push_back(str.substr(start, pos - start));
+        start = pos + delimiter.length();
+    }
+
+    result.push_back(str.substr(start));
+
+    return result;
+}
