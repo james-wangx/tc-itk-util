@@ -18,32 +18,41 @@
 
 extern Teamcenter::Logging::Logger* logger;
 
-bool TcUtil::checkType(const tag_t object, const std::string& typeName)
+void TcUtil::addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
+                              const logical retainReleasedDate)
 {
     ResultStatus ok;
-    Teamcenter::scoped_smptr<char> objectType;
+    std::vector<tag_t> valid;
 
-    LOGGER_ITK(AOM_ask_value_string(object, "object_type", &objectType));
-
-    return typeName == objectType.get();
-}
-
-std::vector<std::string> TcUtil::askPrefValues(const std::string& prefName)
-{
-    ResultStatus ok;
-    int prefCount = 0;
-    Teamcenter::scoped_smptr<char*> prefValuesPtr;
-    std::vector<std::string> result;
-
-    LOGGER_ITK(PREF_ask_char_values(prefName.c_str(), &prefCount, &prefValuesPtr));
-
-    result.reserve(prefCount);
-    for (int i = 0; i < prefCount; ++i)
+    for (const tag_t& workspaceObject : workspaceObjects)
     {
-        result.emplace_back(prefValuesPtr.getString()[i]);
+        // Append or not
+        logical isExist = false;
+        std::vector<tag_t> statuses = askReleasedStatus(workspaceObject);
+        for (const tag_t& status : statuses)
+        {
+            std::string tempStatusType = askValueString(status, "name");
+            if (statusType == tempStatusType)
+            {
+                isExist = true;
+                break;
+            }
+        }
+        if (isExist)
+        {
+            std::string objectName = askValueString(workspaceObject, "object_name");
+            LOGGER_DEBUG("Workspace object %s already has %s, skip", objectName.c_str(), statusType.c_str());
+            continue;
+        }
+        valid.push_back(workspaceObject);
     }
 
-    return result;
+    if (!valid.empty())
+    {
+        tag_t releaseStatus = NULLTAG;
+        LOGGER_ITK(RELSTAT_create_release_status(statusType.c_str(), &releaseStatus));
+        LOGGER_ITK(RELSTAT_add_release_status(releaseStatus, valid.size(), valid.data(), retainReleasedDate));
+    }
 }
 
 std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_list_t* arguments)
@@ -64,6 +73,48 @@ std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_lis
     }
 
     return result;
+}
+
+std::vector<std::string> TcUtil::askPrefValues(const std::string& prefName)
+{
+    ResultStatus ok;
+    int prefCount = 0;
+    Teamcenter::scoped_smptr<char*> prefValuesPtr;
+    std::vector<std::string> result;
+
+    LOGGER_ITK(PREF_ask_char_values(prefName.c_str(), &prefCount, &prefValuesPtr));
+
+    result.reserve(prefCount);
+    for (int i = 0; i < prefCount; ++i)
+    {
+        result.emplace_back(prefValuesPtr.getString()[i]);
+    }
+
+    return result;
+}
+
+std::vector<tag_t> TcUtil::askReleasedStatus(const tag_t workspaceObject)
+{
+    ResultStatus ok;
+    int num = 0;
+    Teamcenter::scoped_smptr<tag_t> statuses;
+
+    LOGGER_ITK(WSOM_ask_release_status_list(workspaceObject, &num, &statuses));
+
+    std::vector<tag_t> result;
+    result.assign(statuses.get(), statuses.get() + num);
+
+    return result;
+}
+
+date_t TcUtil::askValueDate(tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    date_t propValue;
+
+    LOGGER_ITK(AOM_ask_value_date(object, propName.c_str(), &propValue));
+
+    return propValue;
 }
 
 std::string TcUtil::askValueString(const tag_t object, const std::string& propName)
@@ -110,6 +161,40 @@ std::vector<tag_t> TcUtil::askValueTags(const tag_t object, const std::string& p
     return result;
 }
 
+bool TcUtil::checkType(const tag_t object, const std::string& typeName)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> objectType;
+
+    LOGGER_ITK(AOM_ask_value_string(object, "object_type", &objectType));
+
+    return typeName == objectType.get();
+}
+
+void TcUtil::deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType)
+{
+    ResultStatus ok;
+
+    tag_t attr = NULLTAG;
+    LOGGER_ITK(POM_attr_id_of_attr("release_status_list", "WorkspaceObject", &attr));
+
+    for (const tag_t& workspaceObject : workspaceObjects)
+    {
+        std::vector<tag_t> statuses = askReleasedStatus(workspaceObject);
+        for (int i = 0; i < statuses.size(); i++)
+        {
+            std::string tempStatusType = askValueString(statuses[i], "name");
+            if (statusType != tempStatusType)
+            {
+                continue;
+            }
+            LOGGER_ITK(POM_refresh_instances_any_class(1, &workspaceObject, POM_modify_lock));
+            LOGGER_ITK(POM_remove_from_attr(1, &workspaceObject, attr, i, 1));
+            LOGGER_ITK(POM_save_instances(1, &workspaceObject, true));
+        }
+    }
+}
+
 std::vector<tag_t> TcUtil::findRelatedTagsByType(const tag_t primaryObject, const std::string& relationTypeName)
 {
     ResultStatus ok;
@@ -130,34 +215,14 @@ std::vector<tag_t> TcUtil::findRelatedTagsByType(const tag_t primaryObject, cons
     return result;
 }
 
-std::vector<tag_t> TcUtil::where_used_top(const tag_t target, const std::string& typeName)
+logical TcUtil::isTypeOf(const tag_t object, const std::string& parentTypeName)
 {
     ResultStatus ok;
+    logical result = false;
+    tag_t typeTag = NULLTAG;
 
-    int parentNum = 0;
-    Teamcenter::scoped_smptr<int> levelNum;
-    Teamcenter::scoped_smptr<tag_t> parents;
-    std::vector<tag_t> result;
-
-    LOGGER_ITK(PS_where_used_all(target, PS_where_used_all_levels, &parentNum, &levelNum, &parents));
-    for (int i = 0; i < parentNum; i++)
-    {
-        // Top level
-        if (i == parentNum - 1 || levelNum[i] >= levelNum[i + 1])
-        {
-            if (typeName.empty())
-            {
-                result.emplace_back(parents[i]);
-            }
-            else
-            {
-                if (checkType(parents[i], typeName))
-                {
-                    result.emplace_back(parents[i]);
-                }
-            }
-        }
-    }
+    LOGGER_ITK(TCTYPE_ask_object_type(object, &typeTag));
+    LOGGER_ITK(TCTYPE_is_type_of_as_str(typeTag, parentTypeName.c_str(), &result));
 
     return result;
 }
@@ -199,89 +264,34 @@ tag_t TcUtil::queryOne(const std::string& queryName, const std::vector<std::stri
     return resultTags.get()[0];
 }
 
-void TcUtil::addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
-                              const logical retainReleasedDate)
-{
-    ResultStatus ok;
-    std::vector<tag_t> valid;
-
-    for (const tag_t& workspaceObject : workspaceObjects)
-    {
-        // Append or not
-        logical isExist = false;
-        std::vector<tag_t> statuses = askReleasedStatus(workspaceObject);
-        for (const tag_t& status : statuses)
-        {
-            std::string tempStatusType = askValueString(status, "name");
-            if (statusType == tempStatusType)
-            {
-                isExist = true;
-                break;
-            }
-        }
-        if (isExist)
-        {
-            std::string objectName = askValueString(workspaceObject, "object_name");
-            LOGGER_DEBUG("Workspace object %s already has %s, skip", objectName.c_str(), statusType.c_str());
-            continue;
-        }
-        valid.push_back(workspaceObject);
-    }
-
-    if (!valid.empty())
-    {
-        tag_t releaseStatus = NULLTAG;
-        LOGGER_ITK(RELSTAT_create_release_status(statusType.c_str(), &releaseStatus));
-        LOGGER_ITK(RELSTAT_add_release_status(releaseStatus, valid.size(), valid.data(), retainReleasedDate));
-    }
-}
-
-void TcUtil::deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType)
+std::vector<tag_t> TcUtil::where_used_top(const tag_t target, const std::string& typeName)
 {
     ResultStatus ok;
 
-    tag_t attr = NULLTAG;
-    LOGGER_ITK(POM_attr_id_of_attr("release_status_list", "WorkspaceObject", &attr));
-
-    for (const tag_t& workspaceObject : workspaceObjects)
-    {
-        std::vector<tag_t> statuses = askReleasedStatus(workspaceObject);
-        for (int i = 0; i < statuses.size(); i++)
-        {
-            std::string tempStatusType = askValueString(statuses[i], "name");
-            if (statusType != tempStatusType)
-            {
-                continue;
-            }
-            LOGGER_ITK(POM_refresh_instances_any_class(1, &workspaceObject, POM_modify_lock));
-            LOGGER_ITK(POM_remove_from_attr(1, &workspaceObject, attr, i, 1));
-            LOGGER_ITK(POM_save_instances(1, &workspaceObject, true));
-        }
-    }
-}
-
-logical TcUtil::isTypeOf(const tag_t object, const std::string& parentTypeName)
-{
-    ResultStatus ok;
-    logical result = false;
-    tag_t typeTag = NULLTAG;
-
-    LOGGER_ITK(TCTYPE_ask_object_type(object, &typeTag));
-    LOGGER_ITK(TCTYPE_is_type_of_as_str(typeTag, parentTypeName.c_str(), &result));
-
-    return result;
-}
-
-std::vector<tag_t> TcUtil::askReleasedStatus(const tag_t workspaceObject)
-{
-    ResultStatus ok;
-    int num = 0;
-    Teamcenter::scoped_smptr<tag_t> statuses;
-
-    LOGGER_ITK(WSOM_ask_release_status_list(workspaceObject, &num, &statuses));
-
+    int parentNum = 0;
+    Teamcenter::scoped_smptr<int> levelNum;
+    Teamcenter::scoped_smptr<tag_t> parents;
     std::vector<tag_t> result;
-    result.assign(statuses.get(), statuses.get() + num);
+
+    LOGGER_ITK(PS_where_used_all(target, PS_where_used_all_levels, &parentNum, &levelNum, &parents));
+    for (int i = 0; i < parentNum; i++)
+    {
+        // Top level
+        if (i == parentNum - 1 || levelNum[i] >= levelNum[i + 1])
+        {
+            if (typeName.empty())
+            {
+                result.emplace_back(parents[i]);
+            }
+            else
+            {
+                if (checkType(parents[i], typeName))
+                {
+                    result.emplace_back(parents[i]);
+                }
+            }
+        }
+    }
 
     return result;
 }
