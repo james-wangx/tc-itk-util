@@ -35,6 +35,22 @@ public:
      * @return logical true if str starts with prefix, false otherwise
      */
     static logical isStartWith(const std::string& str, const std::string& prefix);
+
+    /**
+     * @brief convert utf-8 string to gbk string
+     *
+     * @param utf8 input utf-8 string
+     * @return gbk string
+     */
+    static std::string utf82gbk(const std::string& utf8);
+
+    /**
+     * @brief convert gbk string to utf-8 string
+     *
+     * @param gbk input gbk string
+     * @return utf-8 string
+     */
+    static std::string gbk2utf8(const std::string& gbk);
 };
 
 #endif // TC_ITK_UTIL_STRINGUTIL_HXX
