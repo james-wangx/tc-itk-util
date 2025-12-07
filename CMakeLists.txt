@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.0.2)
-project(tc_itk_util LANGUAGES C CXX)
+project(tc_itk_util LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -22,7 +22,7 @@ include_directories(
         $ENV{TC2412_ROOT}/include_cpp
 )
 
-file(GLOB SOURCES src/*.cpp)
+file(GLOB SOURCES src/*.cxx)
 
 function(configure_library target_name)
     target_compile_definitions(${target_name} PRIVATE
@@ -30,7 +30,7 @@ function(configure_library target_name)
     )
 
     if (MSVC)
-        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4099 /wd4199 /wd4819 /wd4267)
+        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4819)
     endif ()
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -53,7 +53,7 @@ function(configure_executable target_name)
     )
 
     if (MSVC)
-        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4099 /wd4199 /wd4819 /wd4267)
+        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4819)
         target_link_options(${target_name} PRIVATE $ENV{TC2412_ROOT}/lib/itk_main.obj)
     endif ()
 
@@ -75,26 +75,3 @@ add_library(libtcitkutil STATIC ${SOURCES})
 configure_library(libtcitkutil)
 
 include(GoogleTest)
-
-add_executable(tc_itk_util_test
-        tests/test.cpp
-        tests/item_util_test.cpp
-        tests/session_util_test.cpp
-        tests/qry_util_test.cpp
-        ${SOURCES})
-configure_executable(tc_itk_util_test)
-
-add_executable(item_util_test
-        tests/test.cpp
-        tests/item_util_test.cpp)
-configure_executable(item_util_test)
-
-add_executable(session_util_test
-        tests/test.cpp
-        tests/session_util_test.cpp)
-configure_executable(session_util_test)
-
-add_executable(qry_util_test
-        tests/test.cpp
-        tests/qry_util_test.cpp)
-configure_executable(qry_util_test)

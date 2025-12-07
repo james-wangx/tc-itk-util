@@ -1,1 +1,32 @@
+Language: Cpp
 BasedOnStyle: Microsoft
+AlignEscapedNewlines: Left
+BreakTemplateDeclarations: Yes
+PointerAlignment: Left
+ReferenceAlignment: Left
+AccessModifierOffset: -4
+SeparateDefinitionBlocks: Always
+
+SortIncludes: true
+IncludeBlocks: Regroup
+
+IncludeIsMainRegex: '^$'
+
+IncludeCategories:
+  - Regex: '^<[^.<>]+>$'
+    Priority: 1
+
+  - Regex: '^<.*\.(hxx|hpp|hh)>$'
+    Priority: 2
+
+  - Regex: '^<.*\.h>$'
+    Priority: 3
+
+  - Regex: '^".*\.(hxx|hpp|hh)"$'
+    Priority: 4
+
+  - Regex: '^".*\.h"$'
+    Priority: 5
+
+  - Regex: '.*'
+    Priority: 100
