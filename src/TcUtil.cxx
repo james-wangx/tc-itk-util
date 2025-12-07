@@ -8,6 +8,7 @@
 #include <pom/pom/pom.h>
 #include <ps/ps.h>
 #include <qry/qry.h>
+#include <tc/preferences.h>
 #include <tccore/aom_prop.h>
 #include <tccore/grm.h>
 #include <tccore/releasestatus.h>
@@ -25,6 +26,24 @@ bool TcUtil::checkType(const tag_t object, const std::string& typeName)
     LOGGER_ITK(AOM_ask_value_string(object, "object_type", &objectType));
 
     return typeName == objectType.get();
+}
+
+std::vector<std::string> TcUtil::askPrefValues(const std::string& prefName)
+{
+    ResultStatus ok;
+    int prefCount = 0;
+    Teamcenter::scoped_smptr<char*> prefValuesPtr;
+    std::vector<std::string> result;
+
+    LOGGER_ITK(PREF_ask_char_values(prefName.c_str(), &prefCount, &prefValuesPtr));
+
+    result.reserve(prefCount);
+    for (int i = 0; i < prefCount; ++i)
+    {
+        result.emplace_back(prefValuesPtr.getString()[i]);
+    }
+
+    return result;
 }
 
 std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_list_t* arguments)
