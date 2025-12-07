@@ -1,9 +1,11 @@
 #ifndef TC_ITK_UTIL_TCUTIL_HXX
 #define TC_ITK_UTIL_TCUTIL_HXX
 
+#include <map>
 #include <string>
 #include <vector>
 
+#include <tc/tc_arguments.h>
 #include <unidefs.h>
 
 #define LOGGER_DEBUG(fmt, ...)                                 \
@@ -54,6 +56,7 @@ class TcUtil
 {
 public:
     static bool checkType(tag_t object, const std::string& typeName);
+    static std::map<std::string, std::string> askArgumentNamedValue(TC_argument_list_t* arguments);
     static std::string askValueString(tag_t object, const std::string& propName);
     static std::vector<std::string> askValueStrings(tag_t object, const std::string& propName);
     static std::vector<tag_t> askValueTags(tag_t object, const std::string& propName);

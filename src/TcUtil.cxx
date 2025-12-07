@@ -1,5 +1,5 @@
 // ReSharper disable CppEntityAssignedButNoRead
-
+// ReSharper disable CppTooWideScope
 #include <base_utils/IFail.hxx>
 #include <base_utils/ScopedSmPtr.hxx>
 #include <base_utils/TcResultStatus.hxx>
@@ -25,6 +25,26 @@ bool TcUtil::checkType(const tag_t object, const std::string& typeName)
     LOGGER_ITK(AOM_ask_value_string(object, "object_type", &objectType));
 
     return typeName == objectType.get();
+}
+
+std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_list_t* arguments)
+{
+    ResultStatus ok;
+    std::map<std::string, std::string> result;
+
+    const int argCount = TC_number_of_arguments(arguments);
+    TC_init_argument_list(arguments);
+    for (int i = 0; i < argCount; i++)
+    {
+        const char* argument = TC_next_argument(arguments);
+        Teamcenter::scoped_smptr<char> argNamePtr;
+        Teamcenter::scoped_smptr<char> argValuePtr;
+
+        LOGGER_ITK(ITK_ask_argument_named_value(argument, &argNamePtr, &argValuePtr));
+        result[argNamePtr.getString()] = argValuePtr.getString();
+    }
+
+    return result;
 }
 
 std::string TcUtil::askValueString(const tag_t object, const std::string& propName)
