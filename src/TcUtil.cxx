@@ -1,6 +1,8 @@
 // ReSharper disable CppEntityAssignedButNoRead
 // ReSharper disable CppTooWideScope
 
+#include <chrono>
+
 #include <base_utils/IFail.hxx>
 #include <base_utils/ScopedSmPtr.hxx>
 #include <base_utils/TcResultStatus.hxx>
@@ -237,6 +239,28 @@ logical TcUtil::isTypeOf(const tag_t object, const std::string& parentTypeName)
     LOGGER_ITK(TCTYPE_is_type_of_as_str(typeTag, parentTypeName.c_str(), &result));
 
     return result;
+}
+
+date_t TcUtil::now()
+{
+    const auto now = std::chrono::system_clock::now();
+    time_t t = std::chrono::system_clock::to_time_t(now);
+
+    std::tm utc_tm{};
+#ifdef _WIN32
+    gmtime_s(&utc_tm, &t);
+#else
+    gmtime_r(&t, &utc_tm);
+#endif
+
+    date_t d;
+    d.year = static_cast<short>(utc_tm.tm_year + 1900);
+    d.month = utc_tm.tm_mon;
+    d.day = utc_tm.tm_mday;
+    d.hour = utc_tm.tm_hour;
+    d.minute = utc_tm.tm_min;
+    d.second = utc_tm.tm_sec;
+    return d;
 }
 
 tag_t TcUtil::queryOne(const std::string& queryName, const std::vector<std::string>& entries,
