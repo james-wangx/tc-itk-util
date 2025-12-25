@@ -55,7 +55,8 @@ void TcUtil::addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const 
     {
         tag_t releaseStatus = NULLTAG;
         LOGGER_ITK(RELSTAT_create_release_status(statusType.c_str(), &releaseStatus));
-        LOGGER_ITK(RELSTAT_add_release_status(releaseStatus, valid.size(), valid.data(), retainReleasedDate));
+        LOGGER_ITK(RELSTAT_add_release_status(releaseStatus, static_cast<short>(valid.size()), valid.data(),
+                                              retainReleasedDate));
     }
 }
 
@@ -253,13 +254,14 @@ date_t TcUtil::now()
     gmtime_r(&t, &utc_tm);
 #endif
 
-    date_t d;
+    date_t d{};
     d.year = static_cast<short>(utc_tm.tm_year + 1900);
     d.month = utc_tm.tm_mon;
     d.day = utc_tm.tm_mday;
     d.hour = utc_tm.tm_hour;
     d.minute = utc_tm.tm_min;
     d.second = utc_tm.tm_sec;
+
     return d;
 }
 
@@ -290,7 +292,8 @@ tag_t TcUtil::queryOne(const std::string& queryName, const std::vector<std::stri
     {
         valuesCstrs.push_back(const_cast<char*>(s.c_str()));
     }
-    LOGGER_ITK(QRY_execute(queryTag, entries.size(), entriesCstrs.data(), valuesCstrs.data(), &resultNum, &resultTags));
+    LOGGER_ITK(QRY_execute(queryTag, static_cast<short>(entries.size()), entriesCstrs.data(), valuesCstrs.data(),
+                           &resultNum, &resultTags));
 
     if (resultNum == 0)
     {

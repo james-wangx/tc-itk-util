@@ -30,7 +30,7 @@ function(configure_library target_name)
     )
 
     if (MSVC)
-        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4819)
+        target_compile_options(${target_name} PRIVATE /W3 /MD /wd4819 /wd4251)
     endif ()
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
