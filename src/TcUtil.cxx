@@ -8,6 +8,7 @@
 #include <base_utils/TcResultStatus.hxx>
 #include <mld/logging/Logger.hxx>
 
+#include <epm/epm.h>
 #include <fclasses/tc_date.h>
 #include <pom/pom/pom.h>
 #include <ps/ps.h>
@@ -19,6 +20,8 @@
 #include <tccore/tctype.h>
 
 #include "TcUtil.hxx"
+
+#include "error_codes.h"
 
 extern Teamcenter::Logging::Logger* logger;
 
@@ -107,12 +110,23 @@ std::vector<tag_t> TcUtil::askReleasedStatus(const tag_t workspaceObject)
     LOGGER_ITK(WSOM_ask_release_status_list(workspaceObject, &num, &statuses));
 
     std::vector<tag_t> result;
+    result.reserve(num);
     result.assign(statuses.get(), statuses.get() + num);
 
     return result;
 }
 
-date_t TcUtil::askValueDate(tag_t object, const std::string& propName)
+std::string TcUtil::askTaskName(const tag_t task)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> taskName;
+
+    LOGGER_ITK(EPM_ask_name2(task, &taskName));
+
+    return taskName.getString();
+}
+
+date_t TcUtil::askValueDate(const tag_t object, const std::string& propName)
 {
     ResultStatus ok;
     date_t propValue;
@@ -198,8 +212,7 @@ void TcUtil::deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, con
         std::vector<tag_t> statuses = askReleasedStatus(workspaceObject);
         for (int i = 0; i < statuses.size(); i++)
         {
-            std::string tempStatusType = askValueString(statuses[i], "name");
-            if (statusType != tempStatusType)
+            if (std::string tempStatusType = askValueString(statuses[i], "name"); statusType != tempStatusType)
             {
                 continue;
             }
@@ -224,7 +237,7 @@ std::vector<tag_t> TcUtil::findRelatedTagsByType(const tag_t primaryObject, cons
     result.reserve(count);
     for (int i = 0; i < count; i++)
     {
-        result.emplace_back(secondaryObjects.get()[i]);
+        result.emplace_back(secondaryObjects[i]);
     }
 
     return result;
@@ -276,7 +289,7 @@ tag_t TcUtil::queryOne(const std::string& queryName, const std::vector<std::stri
     LOGGER_ITK(QRY_find2(queryName.c_str(), &queryTag));
     if (queryTag == NULLTAG)
     {
-        throw IFail(0, "Not found query name");
+        throw IFail(ERROR_CODE_DEFAULT, "Not found query name");
     }
 
     std::vector<char*> entriesCstrs;
@@ -300,7 +313,7 @@ tag_t TcUtil::queryOne(const std::string& queryName, const std::vector<std::stri
         return NULLTAG;
     }
 
-    return resultTags.get()[0];
+    return resultTags[0];
 }
 
 std::vector<tag_t> TcUtil::where_used_top(const tag_t target, const std::string& typeName)
