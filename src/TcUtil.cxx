@@ -13,6 +13,7 @@
 #include <pom/pom/pom.h>
 #include <ps/ps.h>
 #include <qry/qry.h>
+#include <sa/sa.h>
 #include <tc/preferences.h>
 #include <tccore/aom_prop.h>
 #include <tccore/grm.h>
@@ -81,6 +82,16 @@ std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_lis
     }
 
     return result;
+}
+
+std::string TcUtil::askPersonAttr(const tag_t person, const std::string& attrName)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> attrValue;
+
+    LOGGER_ITK(SA_ask_person_attr2(person, attrName.c_str(), &attrValue));
+
+    return attrValue.getString();
 }
 
 std::vector<std::string> TcUtil::askPrefValues(const std::string& prefName)
@@ -195,7 +206,7 @@ std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
     ResultStatus ok;
     Teamcenter::scoped_smptr<char> formattedDatePtr;
 
-    DATE_date_to_string(date, formatSt.c_str(), &formattedDatePtr);
+    LOGGER_ITK(DATE_date_to_string(date, formatSt.c_str(), &formattedDatePtr));
 
     return formattedDatePtr.getString();
 }
