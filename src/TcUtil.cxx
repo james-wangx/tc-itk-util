@@ -94,6 +94,16 @@ std::string TcUtil::askPersonAttr(const tag_t person, const std::string& attrNam
     return attrValue.getString();
 }
 
+std::string TcUtil::askPersonName(const tag_t person)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> personName;
+
+    LOGGER_ITK(SA_ask_person_name2(person, &personName));
+
+    return personName.getString();
+}
+
 std::vector<std::string> TcUtil::askPrefValues(const std::string& prefName)
 {
     ResultStatus ok;
