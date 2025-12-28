@@ -157,6 +157,18 @@ date_t TcUtil::askValueDate(const tag_t object, const std::string& propName)
     return propValue;
 }
 
+std::string TcUtil::askValueDateFmt(const tag_t object, const std::string& propName, const std::string& format)
+{
+    ResultStatus ok;
+    date_t dateValue;
+    Teamcenter::scoped_smptr<char> formattedDatePtr;
+
+    LOGGER_ITK(AOM_ask_value_date(object, propName.c_str(), &dateValue));
+    LOGGER_ITK(DATE_date_to_string(dateValue, format.c_str(), &formattedDatePtr));
+
+    return formattedDatePtr.getString();
+}
+
 std::string TcUtil::askValueString(const tag_t object, const std::string& propName)
 {
     ResultStatus ok;

@@ -64,6 +64,7 @@ public:
     static std::vector<tag_t> askReleasedStatus(tag_t workspaceObject);
     static std::string askTaskName(tag_t task);
     static date_t askValueDate(tag_t object, const std::string& propName);
+    static std::string askValueDateFmt(tag_t object, const std::string& propName, const std::string& format);
     static std::string askValueString(tag_t object, const std::string& propName);
     static std::vector<std::string> askValueStrings(tag_t object, const std::string& propName);
     static std::vector<tag_t> askValueTags(tag_t object, const std::string& propName);
