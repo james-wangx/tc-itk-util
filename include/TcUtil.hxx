@@ -68,6 +68,7 @@ public:
     static std::string askValueDateFmt(tag_t object, const std::string& propName, const std::string& format);
     static std::string askValueString(tag_t object, const std::string& propName);
     static std::vector<std::string> askValueStrings(tag_t object, const std::string& propName);
+    static tag_t askValueTag(tag_t object, const std::string& propName);
     static std::vector<tag_t> askValueTags(tag_t object, const std::string& propName);
     static bool checkType(tag_t object, const std::string& typeName);
     static std::string date2string(const date_t& date, const std::string& formatSt);

@@ -206,6 +206,16 @@ std::vector<std::string> TcUtil::askValueStrings(const tag_t object, const std::
     return result;
 }
 
+tag_t TcUtil::askValueTag(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    tag_t propValue = NULLTAG;
+
+    LOGGER_ITK(AOM_ask_value_tag(object, propName.c_str(), &propValue));
+
+    return propValue;
+}
+
 std::vector<tag_t> TcUtil::askValueTags(const tag_t object, const std::string& propName)
 {
     ResultStatus ok;
