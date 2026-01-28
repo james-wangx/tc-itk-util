@@ -84,6 +84,16 @@ std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_lis
     return result;
 }
 
+std::string TcUtil::askGroupFullName(tag_t group)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> groupFullName;
+
+    LOGGER_ITK(SA_ask_group_full_name(group, &groupFullName));
+
+    return groupFullName.getString();
+}
+
 std::string TcUtil::askGroupName(const tag_t group)
 {
     ResultStatus ok;
