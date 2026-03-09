@@ -84,6 +84,36 @@ std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_lis
     return result;
 }
 
+std::string TcUtil::askDisplayableValue(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char*> displayValues;
+    int displayValueCount = 0;
+
+    LOGGER_ITK(AOM_ask_displayable_values(object, propName.c_str(), &displayValueCount, &displayValues));
+    if (displayValueCount == 0)
+    {
+        return "";
+    }
+
+    if (displayValueCount == 1)
+    {
+        return displayValues.getString()[0];
+    }
+
+    std::string result;
+    for (int i = 0; i < displayValueCount; ++i)
+    {
+        result += displayValues.getString()[i];
+        if (i != displayValueCount - 1)
+        {
+            result += ", ";
+        }
+    }
+
+    return result;
+}
+
 std::string TcUtil::askGroupFullName(const tag_t group)
 {
     ResultStatus ok;

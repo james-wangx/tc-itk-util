@@ -58,6 +58,7 @@ public:
     static void addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
                                  logical retainReleasedDate);
     static std::map<std::string, std::string> askArgumentNamedValue(TC_argument_list_t* arguments);
+    static std::string askDisplayableValue(tag_t object, const std::string& propName);
     static std::string askGroupFullName(tag_t group);
     static std::string askGroupName(tag_t group);
     static std::string askPersonAttr(tag_t person, const std::string& attrName);
