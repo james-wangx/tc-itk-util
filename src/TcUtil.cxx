@@ -84,7 +84,7 @@ std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_lis
     return result;
 }
 
-std::string TcUtil::askGroupFullName(tag_t group)
+std::string TcUtil::askGroupFullName(const tag_t group)
 {
     ResultStatus ok;
     Teamcenter::scoped_smptr<char> groupFullName;
@@ -165,6 +165,16 @@ std::string TcUtil::askTaskName(const tag_t task)
     LOGGER_ITK(EPM_ask_name2(task, &taskName));
 
     return taskName.getString();
+}
+
+tag_t TcUtil::askUserDefaultGroup(const tag_t user)
+{
+    ResultStatus ok;
+    tag_t group = NULLTAG;
+
+    LOGGER_ITK(POM_ask_user_default_group(user, &group));
+
+    return group;
 }
 
 date_t TcUtil::askValueDate(const tag_t object, const std::string& propName)
