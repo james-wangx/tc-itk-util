@@ -177,6 +177,16 @@ tag_t TcUtil::askUserDefaultGroup(const tag_t user)
     return group;
 }
 
+std::string TcUtil::askUserName(const tag_t user)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> userName;
+
+    LOGGER_ITK(POM_ask_user_name(user, &userName));
+
+    return userName.getString();
+}
+
 date_t TcUtil::askValueDate(const tag_t object, const std::string& propName)
 {
     ResultStatus ok;
