@@ -84,6 +84,24 @@ std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_lis
     return result;
 }
 
+std::vector<tag_t> TcUtil::askAttachments(const tag_t task, const int attachmentType)
+{
+    ResultStatus ok;
+    int count = 0;
+    Teamcenter::scoped_smptr<tag_t> attachments;
+
+    LOGGER_ITK(EPM_ask_attachments(task, attachmentType, &count, &attachments));
+
+    std::vector<tag_t> result;
+    result.reserve(count);
+    for (int i = 0; i < count; ++i)
+    {
+        result.emplace_back(attachments[i]);
+    }
+
+    return result;
+}
+
 std::string TcUtil::askDisplayableValue(const tag_t object, const std::string& propName)
 {
     ResultStatus ok;
