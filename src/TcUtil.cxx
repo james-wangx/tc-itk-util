@@ -187,6 +187,16 @@ std::vector<tag_t> TcUtil::askReleasedStatus(const tag_t workspaceObject)
     return result;
 }
 
+tag_t TcUtil::askRootTask(const tag_t task)
+{
+    ResultStatus ok;
+    tag_t rootTask = NULLTAG;
+
+    LOGGER_ITK(EPM_ask_root_task(task, &rootTask));
+
+    return rootTask;
+}
+
 std::string TcUtil::askTaskName(const tag_t task)
 {
     ResultStatus ok;

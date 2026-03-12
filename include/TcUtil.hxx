@@ -65,6 +65,7 @@ public:
     static std::string askPersonName(tag_t person);
     static std::vector<std::string> askPrefValues(const std::string& prefName);
     static std::vector<tag_t> askReleasedStatus(tag_t workspaceObject);
+    static tag_t askRootTask(tag_t task);
     static std::string askTaskName(tag_t task);
     static tag_t askUserDefaultGroup(tag_t user);
     static std::string askUserName(tag_t user);
