@@ -29,7 +29,6 @@
         char msg[1024];                                    \
         snprintf(msg, sizeof(msg), fmt, ##__VA_ARGS__);    \
         EMH_store_error_s1(EMH_severity_error, code, msg); \
-        rcode = code;                                      \
         goto CLEANUP;                                      \
     }
 
