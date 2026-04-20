@@ -4,8 +4,9 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/解决方案项/">
+  <Folder Name="/solutions/">
     <File Path=".clang-format" />
+    <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
