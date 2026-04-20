@@ -1,0 +1,14 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Release" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/解决方案项/">
+    <File Path=".clang-format" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="tc-itk-util-2412/tc-itk-util-2412.vcxproj" Id="3f713ea0-88e8-43d7-b632-41bc1cdcf3de" />
+</Solution>

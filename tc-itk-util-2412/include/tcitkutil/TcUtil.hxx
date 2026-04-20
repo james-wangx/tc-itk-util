@@ -83,7 +83,11 @@ public:
     static date_t now();
     static tag_t queryOne(const std::string& queryName, const std::vector<std::string>& entries,
                           const std::vector<std::string>& values);
+    static void setLogger(Teamcenter::Logging::Logger* lp);
     static std::vector<tag_t> where_used_top(tag_t target, const std::string& typeName);
+
+private:
+    static Teamcenter::Logging::Logger* logger;
 };
 
 #endif // TC_ITK_UTIL_TCUTIL_HXX

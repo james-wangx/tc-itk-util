@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "StringUtil.hxx"
+#include "tcitkutil/StringUtil.hxx"
 
 std::wstring StringUtil::char2wstring(const char* str, const UINT codePage)
 {

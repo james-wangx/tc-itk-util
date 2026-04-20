@@ -20,11 +20,11 @@
 #include <tccore/releasestatus.h>
 #include <tccore/tctype.h>
 
-#include "TcUtil.hxx"
+#include "tcitkutil/TcUtil.hxx"
 
-#include "error_codes.h"
+#include "tcitkutil/error_codes.h"
 
-extern Teamcenter::Logging::Logger* logger;
+Teamcenter::Logging::Logger* TcUtil::logger = nullptr;
 
 void TcUtil::addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
                               const logical retainReleasedDate)
@@ -455,6 +455,11 @@ tag_t TcUtil::queryOne(const std::string& queryName, const std::vector<std::stri
     }
 
     return resultTags[0];
+}
+
+void TcUtil::setLogger(Teamcenter::Logging::Logger* lp)
+{
+    logger = lp;
 }
 
 std::vector<tag_t> TcUtil::where_used_top(const tag_t target, const std::string& typeName)
