@@ -6,20 +6,24 @@
 #include <vector>
 
 #include <tc/tc_arguments.h>
+#include <tc/tc_util.h>
 #include <unidefs.h>
 
 #define LOGGER_DEBUG(fmt, ...)                                 \
     {                                                          \
+        TC_printf("DEBUG - " fmt "\n", ##__VA_ARGS__);         \
         logger->debug(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     }
 
 #define LOGGER_INFO(fmt, ...)                                 \
     {                                                         \
+        TC_printf("INFO  - " fmt "\n", ##__VA_ARGS__);        \
         logger->info(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
     }
 
 #define LOGGER_ERROR(code, fmt, ...)                                 \
     {                                                                \
+        TC_printf("ERROR - " fmt "\n", ##__VA_ARGS__);               \
         logger->error(__FILE__, __LINE__, code, fmt, ##__VA_ARGS__); \
     }
 
