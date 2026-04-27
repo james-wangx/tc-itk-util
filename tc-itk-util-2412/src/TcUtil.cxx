@@ -341,7 +341,13 @@ std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
     return formattedDatePtr.getString();
 }
 
-void TcUtil::deleteRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName)
+void TcUtil::deleteInstance(const tag_t object)
+{
+    ResultStatus ok;
+    LOGGER_ITK(POM_delete_instances(1, &object));
+}
+
+void TcUtil::deleteRelation(const tag_t primaryObject, const tag_t secondaryObject, const std::string& relationTypeName)
 {
     ResultStatus ok;
     tag_t relationType = NULLTAG;
