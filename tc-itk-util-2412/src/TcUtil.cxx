@@ -15,6 +15,7 @@
 #include <qry/qry.h>
 #include <sa/sa.h>
 #include <tc/preferences.h>
+#include <tccore/aom.h>
 #include <tccore/aom_prop.h>
 #include <tccore/grm.h>
 #include <tccore/releasestatus.h>
@@ -25,6 +26,19 @@
 #include "tcitkutil/error_codes.h"
 
 Teamcenter::Logging::Logger* TcUtil::logger = nullptr;
+
+void TcUtil::addRelation(const tag_t primaryObject, const tag_t secondaryObject, const std::string& relationTypeName)
+{
+    ResultStatus ok;
+    tag_t relationType = NULLTAG;
+    tag_t relation = NULLTAG;
+
+    LOGGER_ITK(AOM_lock(primaryObject));
+    LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+    LOGGER_ITK(GRM_create_relation(primaryObject, secondaryObject, relationType, NULLTAG, &relation));
+    LOGGER_ITK(GRM_save_relation(relation));
+    LOGGER_ITK(AOM_unlock(primaryObject));
+}
 
 void TcUtil::addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
                               const logical retainReleasedDate)
@@ -399,6 +413,16 @@ std::vector<tag_t> TcUtil::findRelatedTagsByType(const tag_t primaryObject, cons
     }
 
     return result;
+}
+
+tag_t TcUtil::findRelationType(const std::string& relationTypeName)
+{
+    ResultStatus ok;
+    tag_t relationType = NULLTAG;
+
+    LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+
+    return relationType;
 }
 
 logical TcUtil::isTypeOf(const tag_t object, const std::string& parentTypeName)

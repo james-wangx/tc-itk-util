@@ -58,6 +58,7 @@ extern "C"
 class TcUtil
 {
 public:
+    static void addRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static void addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
                                  logical retainReleasedDate);
     static std::map<std::string, std::string> askArgumentNamedValue(TC_argument_list_t* arguments);
@@ -85,6 +86,7 @@ public:
     static void deleteRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static void deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType);
     static std::vector<tag_t> findRelatedTagsByType(tag_t primaryObject, const std::string& relationTypeName);
+    static tag_t findRelationType(const std::string& relationTypeName);
     static logical isTypeOf(tag_t object, const std::string& parentTypeName);
     static date_t now();
     static tag_t queryOne(const std::string& queryName, const std::vector<std::string>& entries,
