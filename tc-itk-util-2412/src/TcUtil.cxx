@@ -345,6 +345,16 @@ bool TcUtil::checkType(const tag_t object, const std::string& typeName)
     return typeName == objectType.get();
 }
 
+bool TcUtil::checkUserPrivilege(const tag_t user, const tag_t object, const std::string& privilegeName)
+{
+    ResultStatus ok;
+    logical hasPrivilege = false;
+
+    LOGGER_ITK(AM_check_users_privilege(user, object, privilegeName.c_str(), &hasPrivilege));
+
+    return hasPrivilege;
+}
+
 std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
 {
     ResultStatus ok;
