@@ -337,6 +337,13 @@ std::vector<tag_t> TcUtil::askValueTags(const tag_t object, const std::string& p
     return result;
 }
 
+bool TcUtil::checkRelation(tag_t primaryObject, tag_t secondaryObject, std::string& relationTypeName)
+{
+    std::vector<tag_t> secondaryObjects = findRelatedTagsByType(primaryObject, relationTypeName);
+
+    return std::find(secondaryObjects.begin(), secondaryObjects.end(), secondaryObject) != secondaryObjects.end();
+}
+
 bool TcUtil::checkType(const tag_t object, const std::string& typeName)
 {
     ResultStatus ok;
