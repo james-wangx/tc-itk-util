@@ -13,6 +13,7 @@
 #include <pom/pom/pom.h>
 #include <ps/ps.h>
 #include <qry/qry.h>
+#include <sa/am.h>
 #include <sa/sa.h>
 #include <tc/preferences.h>
 #include <tccore/aom.h>
@@ -33,10 +34,11 @@ void TcUtil::addRelation(const tag_t primaryObject, const tag_t secondaryObject,
     tag_t relationType = NULLTAG;
     tag_t relation = NULLTAG;
 
-    LOGGER_ITK(AOM_lock(primaryObject));
     LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+    LOGGER_ITK(AOM_lock(primaryObject));
     LOGGER_ITK(GRM_create_relation(primaryObject, secondaryObject, relationType, NULLTAG, &relation));
     LOGGER_ITK(GRM_save_relation(relation));
+    LOGGER_ITK(AOM_unlock(relation));
     LOGGER_ITK(AOM_unlock(primaryObject));
 }
 
@@ -379,7 +381,9 @@ void TcUtil::deleteRelation(const tag_t primaryObject, const tag_t secondaryObje
 
     LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
     LOGGER_ITK(GRM_find_relation(primaryObject, secondaryObject, relationType, &relation));
+    LOGGER_ITK(AOM_lock(primaryObject));
     LOGGER_ITK(GRM_delete_relation(relation));
+    LOGGER_ITK(AOM_unlock(primaryObject));
 }
 
 void TcUtil::deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType)
