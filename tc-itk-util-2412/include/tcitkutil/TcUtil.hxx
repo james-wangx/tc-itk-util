@@ -80,7 +80,7 @@ public:
     static std::vector<std::string> askValueStrings(tag_t object, const std::string& propName);
     static tag_t askValueTag(tag_t object, const std::string& propName);
     static std::vector<tag_t> askValueTags(tag_t object, const std::string& propName);
-    static bool checkRelation(tag_t primaryObject, tag_t secondaryObject, std::string& relationTypeName);
+    static bool checkRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static bool checkType(tag_t object, const std::string& typeName);
     static bool checkUserPrivilege(tag_t user, tag_t object, const std::string& privilegeName);
     static std::string date2string(const date_t& date, const std::string& formatSt);
