@@ -390,6 +390,7 @@ void TcUtil::deleteRelation(const tag_t primaryObject, const tag_t secondaryObje
     LOGGER_ITK(GRM_find_relation(primaryObject, secondaryObject, relationType, &relation));
     LOGGER_ITK(AOM_lock(primaryObject));
     LOGGER_ITK(GRM_delete_relation(relation));
+    LOGGER_ITK(AOM_save_without_extensions(primaryObject));
     LOGGER_ITK(AOM_unlock(primaryObject));
 }
 
