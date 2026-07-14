@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <mld/logging/Logger.hxx>
+
 #include <tc/tc_arguments.h>
 #include <tc/tc_util.h>
 #include <unidefs.h>
