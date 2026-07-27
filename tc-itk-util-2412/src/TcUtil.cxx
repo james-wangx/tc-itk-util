@@ -15,6 +15,7 @@
 #include <qry/qry.h>
 #include <sa/am.h>
 #include <sa/sa.h>
+#include <sa/user.h>
 #include <tc/preferences.h>
 #include <tccore/aom.h>
 #include <tccore/aom_prop.h>
@@ -445,6 +446,16 @@ tag_t TcUtil::findRelationType(const std::string& relationTypeName)
     LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
 
     return relationType;
+}
+
+tag_t TcUtil::findUserById(const std::string& id)
+{
+    ResultStatus ok;
+    tag_t user = NULLTAG;
+
+    LOGGER_ITK(SA_find_user2(id.c_str(), &user));
+
+    return user;
 }
 
 logical TcUtil::isTypeOf(const tag_t object, const std::string& parentTypeName)

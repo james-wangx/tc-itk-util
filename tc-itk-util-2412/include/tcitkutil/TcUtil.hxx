@@ -91,6 +91,7 @@ public:
     static void deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType);
     static std::vector<tag_t> findRelatedTagsByType(tag_t primaryObject, const std::string& relationTypeName);
     static tag_t findRelationType(const std::string& relationTypeName);
+    static tag_t findUserById(const std::string& id);
     static logical isTypeOf(tag_t object, const std::string& parentTypeName);
     static date_t now();
     static tag_t queryOne(const std::string& queryName, const std::vector<std::string>& entries,
