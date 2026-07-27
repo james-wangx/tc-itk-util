@@ -89,6 +89,7 @@ public:
     static bool checkUserPrivilege(tag_t user, tag_t object, const std::string& privilegeName);
     static bool createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs);
     static std::string date2string(const date_t& date, const std::string& formatSt);
+    static bool deleteAssignments(tag_t schedule, std::vector<tag_t> assignments);
     static void deleteInstance(tag_t object);
     static void deleteRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static void deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType);

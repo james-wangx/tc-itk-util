@@ -394,6 +394,22 @@ std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
     return formattedDatePtr.getString();
 }
 
+bool TcUtil::deleteAssignments(tag_t schedule, std::vector<tag_t> assignments)
+{
+    ResultStatus ok;
+
+    try
+    {
+        LOGGER_ITK(SCHMGT_delete_assignments(schedule, assignments.size(), assignments.data()));
+        return true;
+    }
+    catch (const IFail& ifail)
+    {
+        LOGGER_ERROR(ERROR_CODE_DEFAULT, "Catch error: %s", ifail.getMessage().c_str());
+        return false;
+    }
+}
+
 void TcUtil::deleteInstance(const tag_t object)
 {
     ResultStatus ok;
