@@ -448,14 +448,25 @@ tag_t TcUtil::findRelationType(const std::string& relationTypeName)
     return relationType;
 }
 
-tag_t TcUtil::findUserById(const std::string& id)
+std::optional<tag_t> TcUtil::findUserById(const std::string& id)
 {
     ResultStatus ok;
-    tag_t user = NULLTAG;
 
-    LOGGER_ITK(SA_find_user2(id.c_str(), &user));
-
-    return user;
+    try
+    {
+        tag_t user = NULLTAG;
+        LOGGER_ITK(SA_find_user2(id.c_str(), &user));
+        if (user == NULLTAG)
+        {
+            return std::nullopt;
+        }
+        return user;
+    }
+    catch (const IFail& ifail)
+    {
+        LOGGER_ERROR(ERROR_CODE_DEFAULT, "%s", ifail.getMessage().c_str());
+        return std::nullopt;
+    }
 }
 
 logical TcUtil::isTypeOf(const tag_t object, const std::string& parentTypeName)
