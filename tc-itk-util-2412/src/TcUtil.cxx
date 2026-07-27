@@ -365,6 +365,18 @@ bool TcUtil::checkUserPrivilege(const tag_t user, const tag_t object, const std:
     return hasPrivilege;
 }
 
+std::optional<std::string> TcUtil::covertTag2Uid(tag_t tag)
+{
+
+    Teamcenter::scoped_smptr<char> uidPtr;
+    ITK__convert_tag_to_uid(tag, &uidPtr);
+    if (uidPtr.get() == NULL)
+    {
+        return std::nullopt;
+    }
+    return uidPtr.getString();
+}
+
 bool TcUtil::createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs)
 {
     ResultStatus ok;
