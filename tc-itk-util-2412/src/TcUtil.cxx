@@ -365,6 +365,25 @@ bool TcUtil::checkUserPrivilege(const tag_t user, const tag_t object, const std:
     return hasPrivilege;
 }
 
+bool TcUtil::createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs)
+{
+    ResultStatus ok;
+
+    try
+    {
+        int createdNum;
+        Teamcenter::scoped_smptr<tag_t> createdAssignmentsPtr;
+        LOGGER_ITK(SCHMGT_create_assignments(schedule, createInputs.size(), createInputs.data(), &createdNum,
+                                             &createdAssignmentsPtr));
+        return true;
+    }
+    catch (const IFail& ifail)
+    {
+        LOGGER_ERROR(ERROR_CODE_DEFAULT, "Catch error: %s", ifail.getMessage().c_str());
+        return false;
+    }
+}
+
 std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
 {
     ResultStatus ok;
@@ -464,7 +483,7 @@ std::optional<tag_t> TcUtil::findUserById(const std::string& id)
     }
     catch (const IFail& ifail)
     {
-        LOGGER_ERROR(ERROR_CODE_DEFAULT, "%s", ifail.getMessage().c_str());
+        LOGGER_ERROR(ERROR_CODE_DEFAULT, "Catch error: %s", ifail.getMessage().c_str());
         return std::nullopt;
     }
 }

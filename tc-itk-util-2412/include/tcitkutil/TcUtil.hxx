@@ -8,6 +8,7 @@
 
 #include <mld/logging/Logger.hxx>
 
+#include <schmgt/schmgt_bridge_itk.h>
 #include <tc/tc_arguments.h>
 #include <tc/tc_util.h>
 #include <unidefs.h>
@@ -86,6 +87,7 @@ public:
     static bool checkRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static bool checkType(tag_t object, const std::string& typeName);
     static bool checkUserPrivilege(tag_t user, tag_t object, const std::string& privilegeName);
+    static bool createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs);
     static std::string date2string(const date_t& date, const std::string& formatSt);
     static void deleteInstance(tag_t object);
     static void deleteRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
