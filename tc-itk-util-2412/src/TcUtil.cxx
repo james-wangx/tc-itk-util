@@ -485,14 +485,53 @@ std::vector<tag_t> TcUtil::findRelatedTagsByType(const tag_t primaryObject, cons
     return result;
 }
 
-tag_t TcUtil::findRelationType(const std::string& relationTypeName)
+std::optional<tag_t> TcUtil::findRelation(tag_t primaryObject, tag_t secondaryObject,
+                                          const std::string& relationTypeName)
 {
     ResultStatus ok;
-    tag_t relationType = NULLTAG;
 
-    LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+    auto relationTypeOpt = findRelationType(relationTypeName);
+    if (!relationTypeOpt)
+    {
+        return std::nullopt;
+    }
 
-    return relationType;
+    try
+    {
+        tag_t relation = NULLTAG;
+        LOGGER_ITK(GRM_find_relation(primaryObject, secondaryObject, relationTypeOpt.value(), &relation));
+        if (relation == NULLTAG)
+        {
+            return std::nullopt;
+        }
+        return relation;
+    }
+    catch (const IFail& ifail)
+    {
+        LOGGER_ERROR(ERROR_CODE_DEFAULT, "Catch error: %s", ifail.getMessage().c_str());
+        return std::nullopt;
+    }
+}
+
+std::optional<tag_t> TcUtil::findRelationType(const std::string& relationTypeName)
+{
+    ResultStatus ok;
+
+    try
+    {
+        tag_t relationType = NULLTAG;
+        LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+        if (relationType == NULLTAG)
+        {
+            return std::nullopt;
+        }
+        return relationType;
+    }
+    catch (const IFail& ifail)
+    {
+        LOGGER_ERROR(ERROR_CODE_DEFAULT, "Catch error: %s", ifail.getMessage().c_str());
+        return std::nullopt;
+    }
 }
 
 std::optional<tag_t> TcUtil::findUserById(const std::string& id)
