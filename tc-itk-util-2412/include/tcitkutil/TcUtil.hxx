@@ -87,7 +87,7 @@ public:
     static bool checkRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static bool checkType(tag_t object, const std::string& typeName);
     static bool checkUserPrivilege(tag_t user, tag_t object, const std::string& privilegeName);
-    static std::optional<std::string> covertTag2Uid(tag_t tag);
+    static std::optional<std::string> convertTag2Uid(tag_t tag);
     static bool createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs);
     static std::string date2string(const date_t& date, const std::string& formatSt);
     static bool deleteAssignments(tag_t schedule, std::vector<tag_t> assignments);

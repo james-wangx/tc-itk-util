@@ -365,7 +365,7 @@ bool TcUtil::checkUserPrivilege(const tag_t user, const tag_t object, const std:
     return hasPrivilege;
 }
 
-std::optional<std::string> TcUtil::covertTag2Uid(tag_t tag)
+std::optional<std::string> TcUtil::convertTag2Uid(tag_t tag)
 {
 
     Teamcenter::scoped_smptr<char> uidPtr;
