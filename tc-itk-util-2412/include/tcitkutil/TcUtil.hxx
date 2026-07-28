@@ -1,8 +1,6 @@
-#ifndef TC_ITK_UTIL_TCUTIL_HXX
-#define TC_ITK_UTIL_TCUTIL_HXX
+#pragma once
 
 #include <map>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -87,7 +85,7 @@ public:
     static bool checkRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static bool checkType(tag_t object, const std::string& typeName);
     static bool checkUserPrivilege(tag_t user, tag_t object, const std::string& privilegeName);
-    static std::optional<std::string> convertTag2Uid(tag_t tag);
+    static std::string convertTag2Uid(tag_t tag);
     static bool createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs);
     static std::string date2string(const date_t& date, const std::string& formatSt);
     static bool deleteAssignments(tag_t schedule, std::vector<tag_t> assignments);
@@ -95,10 +93,9 @@ public:
     static void deleteRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
     static void deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType);
     static std::vector<tag_t> findRelatedTagsByType(tag_t primaryObject, const std::string& relationTypeName);
-    static std::optional<tag_t> findRelation(tag_t primaryObject, tag_t secondaryObject,
-                                             const std::string& relationTypeName);
-    static std::optional<tag_t> findRelationType(const std::string& relationTypeName);
-    static std::optional<tag_t> findUserById(const std::string& id);
+    static tag_t findRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
+    static tag_t findRelationType(const std::string& relationTypeName);
+    static tag_t findUserById(const std::string& id);
     static logical isTypeOf(tag_t object, const std::string& parentTypeName);
     static date_t now();
     static tag_t queryOne(const std::string& queryName, const std::vector<std::string>& entries,
@@ -109,5 +106,3 @@ public:
 private:
     static Teamcenter::Logging::Logger* logger;
 };
-
-#endif // TC_ITK_UTIL_TCUTIL_HXX
