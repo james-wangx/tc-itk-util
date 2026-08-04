@@ -46,7 +46,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>C:\Program Files\Siemens\Teamcenter2412\include;C:\Program Files\Siemens\Teamcenter2412\include_cpp;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\PLM\Teamcenter\2412\include;C:\PLM\Teamcenter\2412\include_cpp;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4819;4251</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
