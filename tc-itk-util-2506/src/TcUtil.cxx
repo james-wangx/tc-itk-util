@@ -1,0 +1,605 @@
+// ReSharper disable CppEntityAssignedButNoRead
+// ReSharper disable CppTooWideScope
+
+#include <chrono>
+
+#include <base_utils/IFail.hxx>
+#include <base_utils/ScopedSmPtr.hxx>
+#include <base_utils/TcResultStatus.hxx>
+#include <mld/logging/Logger.hxx>
+
+#include <epm/epm.h>
+#include <fclasses/tc_date.h>
+#include <pom/pom/pom.h>
+#include <ps/ps.h>
+#include <qry/qry.h>
+#include <sa/am.h>
+#include <sa/sa.h>
+#include <sa/user.h>
+#include <tc/preferences.h>
+#include <tccore/aom.h>
+#include <tccore/aom_prop.h>
+#include <tccore/grm.h>
+#include <tccore/releasestatus.h>
+#include <tccore/tctype.h>
+
+#include "tcitkutil/TcUtil.hxx"
+
+#include "tcitkutil/error_codes.h"
+
+Teamcenter::Logging::Logger* TcUtil::logger = nullptr;
+
+void TcUtil::addRelation(const tag_t primaryObject, const tag_t secondaryObject, const std::string& relationTypeName)
+{
+    ResultStatus ok;
+    tag_t relationType = NULLTAG;
+    tag_t relation = NULLTAG;
+
+    LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+    LOGGER_ITK(AOM_lock(primaryObject));
+    LOGGER_ITK(GRM_create_relation(primaryObject, secondaryObject, relationType, NULLTAG, &relation));
+    LOGGER_ITK(GRM_save_relation(relation));
+    LOGGER_ITK(AOM_unlock(relation));
+    LOGGER_ITK(AOM_unlock(primaryObject));
+}
+
+void TcUtil::addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
+                              const logical retainReleasedDate)
+{
+    ResultStatus ok;
+    std::vector<tag_t> valid;
+
+    for (const tag_t& workspaceObject : workspaceObjects)
+    {
+        // Append or not
+        logical isExist = false;
+        std::vector<tag_t> statuses = askReleasedStatus(workspaceObject);
+        for (const tag_t& status : statuses)
+        {
+            std::string tempStatusType = askValueString(status, "name");
+            if (statusType == tempStatusType)
+            {
+                isExist = true;
+                break;
+            }
+        }
+        if (isExist)
+        {
+            std::string objectName = askValueString(workspaceObject, "object_name");
+            LOGGER_DEBUG("Workspace object %s already has %s, skip", objectName.c_str(), statusType.c_str());
+            continue;
+        }
+        valid.push_back(workspaceObject);
+    }
+
+    if (!valid.empty())
+    {
+        tag_t releaseStatus = NULLTAG;
+        LOGGER_ITK(RELSTAT_create_release_status(statusType.c_str(), &releaseStatus));
+        LOGGER_ITK(RELSTAT_add_release_status(releaseStatus, static_cast<short>(valid.size()), valid.data(),
+                                              retainReleasedDate));
+    }
+}
+
+std::map<std::string, std::string> TcUtil::askArgumentNamedValue(TC_argument_list_t* arguments)
+{
+    ResultStatus ok;
+    std::map<std::string, std::string> result;
+
+    const int argCount = TC_number_of_arguments(arguments);
+    TC_init_argument_list(arguments);
+    for (int i = 0; i < argCount; i++)
+    {
+        const char* argument = TC_next_argument(arguments);
+        Teamcenter::scoped_smptr<char> argNamePtr;
+        Teamcenter::scoped_smptr<char> argValuePtr;
+
+        LOGGER_ITK(ITK_ask_argument_named_value(argument, &argNamePtr, &argValuePtr));
+        result[argNamePtr.getString()] = argValuePtr.getString();
+    }
+
+    return result;
+}
+
+std::vector<tag_t> TcUtil::askAttachments(const tag_t task, const int attachmentType)
+{
+    ResultStatus ok;
+    int count = 0;
+    Teamcenter::scoped_smptr<tag_t> attachments;
+
+    LOGGER_ITK(EPM_ask_attachments(task, attachmentType, &count, &attachments));
+
+    std::vector<tag_t> result;
+    result.reserve(count);
+    for (int i = 0; i < count; ++i)
+    {
+        result.emplace_back(attachments[i]);
+    }
+
+    return result;
+}
+
+std::string TcUtil::askDisplayableValue(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char*> displayValues;
+    int displayValueCount = 0;
+
+    LOGGER_ITK(AOM_ask_displayable_values(object, propName.c_str(), &displayValueCount, &displayValues));
+    if (displayValueCount == 0)
+    {
+        return "";
+    }
+
+    if (displayValueCount == 1)
+    {
+        return displayValues.getString()[0];
+    }
+
+    std::string result;
+    for (int i = 0; i < displayValueCount; ++i)
+    {
+        result += displayValues.getString()[i];
+        if (i != displayValueCount - 1)
+        {
+            result += ", ";
+        }
+    }
+
+    return result;
+}
+
+std::string TcUtil::askGroupFullName(const tag_t group)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> groupFullName;
+
+    LOGGER_ITK(SA_ask_group_full_name(group, &groupFullName));
+
+    return groupFullName.getString();
+}
+
+std::string TcUtil::askGroupName(const tag_t group)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> groupName;
+
+    LOGGER_ITK(SA_ask_group_name2(group, &groupName));
+
+    return groupName.getString();
+}
+
+std::string TcUtil::askPersonAttr(const tag_t person, const std::string& attrName)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> attrValue;
+
+    LOGGER_ITK(SA_ask_person_attr2(person, attrName.c_str(), &attrValue));
+
+    return attrValue.getString();
+}
+
+std::string TcUtil::askPersonName(const tag_t person)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> personName;
+
+    LOGGER_ITK(SA_ask_person_name2(person, &personName));
+
+    return personName.getString();
+}
+
+std::vector<std::string> TcUtil::askPrefValues(const std::string& prefName)
+{
+    ResultStatus ok;
+    int prefCount = 0;
+    Teamcenter::scoped_smptr<char*> prefValuesPtr;
+    std::vector<std::string> result;
+
+    LOGGER_ITK(PREF_ask_char_values(prefName.c_str(), &prefCount, &prefValuesPtr));
+
+    result.reserve(prefCount);
+    for (int i = 0; i < prefCount; ++i)
+    {
+        result.emplace_back(prefValuesPtr.getString()[i]);
+    }
+
+    return result;
+}
+
+std::vector<tag_t> TcUtil::askReleasedStatus(const tag_t workspaceObject)
+{
+    ResultStatus ok;
+    int num = 0;
+    Teamcenter::scoped_smptr<tag_t> statuses;
+
+    LOGGER_ITK(WSOM_ask_release_status_list(workspaceObject, &num, &statuses));
+
+    std::vector<tag_t> result;
+    result.reserve(num);
+    result.assign(statuses.get(), statuses.get() + num);
+
+    return result;
+}
+
+tag_t TcUtil::askRootTask(const tag_t task)
+{
+    ResultStatus ok;
+    tag_t rootTask = NULLTAG;
+
+    LOGGER_ITK(EPM_ask_root_task(task, &rootTask));
+
+    return rootTask;
+}
+
+std::string TcUtil::askTaskName(const tag_t task)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> taskName;
+
+    LOGGER_ITK(EPM_ask_name2(task, &taskName));
+
+    return taskName.getString();
+}
+
+tag_t TcUtil::askUserDefaultGroup(const tag_t user)
+{
+    ResultStatus ok;
+    tag_t group = NULLTAG;
+
+    LOGGER_ITK(POM_ask_user_default_group(user, &group));
+
+    return group;
+}
+
+std::string TcUtil::askUserName(const tag_t user)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> userName;
+
+    LOGGER_ITK(POM_ask_user_name(user, &userName));
+
+    return userName.getString();
+}
+
+date_t TcUtil::askValueDate(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    date_t propValue;
+
+    LOGGER_ITK(AOM_ask_value_date(object, propName.c_str(), &propValue));
+
+    return propValue;
+}
+
+std::string TcUtil::askValueDateFmt(const tag_t object, const std::string& propName, const std::string& format)
+{
+    ResultStatus ok;
+    date_t dateValue;
+    Teamcenter::scoped_smptr<char> formattedDatePtr;
+
+    LOGGER_ITK(AOM_ask_value_date(object, propName.c_str(), &dateValue));
+    LOGGER_ITK(DATE_date_to_string(dateValue, format.c_str(), &formattedDatePtr));
+
+    return formattedDatePtr.getString();
+}
+
+std::string TcUtil::askValueString(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> propValue;
+
+    LOGGER_ITK(AOM_ask_value_string(object, propName.c_str(), &propValue));
+
+    return propValue.get();
+}
+
+std::vector<std::string> TcUtil::askValueStrings(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    int num = 0;
+    Teamcenter::scoped_smptr<char*> values;
+
+    LOGGER_ITK(AOM_ask_value_strings(object, propName.c_str(), &num, &values));
+    std::vector<std::string> result;
+    result.reserve(num);
+    for (int i = 0; i < num; ++i)
+    {
+        result.emplace_back(values[i]);
+    }
+
+    return result;
+}
+
+tag_t TcUtil::askValueTag(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    tag_t propValue = NULLTAG;
+
+    LOGGER_ITK(AOM_ask_value_tag(object, propName.c_str(), &propValue));
+
+    return propValue;
+}
+
+std::vector<tag_t> TcUtil::askValueTags(const tag_t object, const std::string& propName)
+{
+    ResultStatus ok;
+    int num = 0;
+    Teamcenter::scoped_smptr<tag_t> values;
+    std::vector<tag_t> result;
+
+    LOGGER_ITK(AOM_ask_value_tags(object, propName.c_str(), &num, &values));
+    result.reserve(num);
+    for (int i = 0; i < num; ++i)
+    {
+        result.emplace_back(values[i]);
+    }
+
+    return result;
+}
+
+bool TcUtil::checkRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName)
+{
+    std::vector<tag_t> secondaryObjects = findRelatedTagsByType(primaryObject, relationTypeName);
+
+    return std::find(secondaryObjects.begin(), secondaryObjects.end(), secondaryObject) != secondaryObjects.end();
+}
+
+bool TcUtil::checkType(const tag_t object, const std::string& typeName)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> objectType;
+
+    LOGGER_ITK(AOM_ask_value_string(object, "object_type", &objectType));
+
+    return typeName == objectType.get();
+}
+
+bool TcUtil::checkUserPrivilege(const tag_t user, const tag_t object, const std::string& privilegeName)
+{
+    ResultStatus ok;
+    logical hasPrivilege = false;
+
+    LOGGER_ITK(AM_check_users_privilege(user, object, privilegeName.c_str(), &hasPrivilege));
+
+    return hasPrivilege;
+}
+
+std::string TcUtil::convertTag2Uid(tag_t tag)
+{
+    Teamcenter::scoped_smptr<char> uidPtr;
+    ITK__convert_tag_to_uid(tag, &uidPtr);
+
+    return uidPtr.getString();
+}
+
+void TcUtil::createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs)
+{
+    ResultStatus ok;
+    int createdNum;
+    Teamcenter::scoped_smptr<tag_t> createdAssignmentsPtr;
+
+    LOGGER_ITK(SCHMGT_create_assignments(schedule, (int)createInputs.size(), createInputs.data(), &createdNum,
+                                         &createdAssignmentsPtr));
+}
+
+std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
+{
+    ResultStatus ok;
+    Teamcenter::scoped_smptr<char> formattedDatePtr;
+
+    LOGGER_ITK(DATE_date_to_string(date, formatSt.c_str(), &formattedDatePtr));
+
+    return formattedDatePtr.getString();
+}
+
+void TcUtil::deleteAssignments(tag_t schedule, std::vector<tag_t> assignments)
+{
+    ResultStatus ok;
+
+    LOGGER_ITK(SCHMGT_delete_assignments(schedule, (int)assignments.size(), assignments.data()));
+}
+
+void TcUtil::deleteInstance(const tag_t object)
+{
+    ResultStatus ok;
+    LOGGER_ITK(POM_delete_instances(1, &object));
+}
+
+void TcUtil::deleteRelation(const tag_t primaryObject, const tag_t secondaryObject, const std::string& relationTypeName)
+{
+    ResultStatus ok;
+    tag_t relationType = NULLTAG;
+    tag_t relation = NULLTAG;
+
+    LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+    LOGGER_ITK(GRM_find_relation(primaryObject, secondaryObject, relationType, &relation));
+    LOGGER_ITK(AOM_lock(primaryObject));
+    LOGGER_ITK(GRM_delete_relation(relation));
+    LOGGER_ITK(AOM_save_without_extensions(primaryObject));
+    LOGGER_ITK(AOM_unlock(primaryObject));
+}
+
+void TcUtil::deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType)
+{
+    ResultStatus ok;
+
+    tag_t attr = NULLTAG;
+    LOGGER_ITK(POM_attr_id_of_attr("release_status_list", "WorkspaceObject", &attr));
+
+    for (const tag_t& workspaceObject : workspaceObjects)
+    {
+        std::vector<tag_t> statuses = askReleasedStatus(workspaceObject);
+        for (int i = 0; i < statuses.size(); i++)
+        {
+            if (std::string tempStatusType = askValueString(statuses[i], "name"); statusType != tempStatusType)
+            {
+                continue;
+            }
+            LOGGER_ITK(POM_refresh_instances_any_class(1, &workspaceObject, POM_modify_lock));
+            LOGGER_ITK(POM_remove_from_attr(1, &workspaceObject, attr, i, 1));
+            LOGGER_ITK(POM_save_instances(1, &workspaceObject, true));
+        }
+    }
+}
+
+std::vector<tag_t> TcUtil::findRelatedTagsByType(const tag_t primaryObject, const std::string& relationTypeName)
+{
+    ResultStatus ok;
+    int count = 0;
+    tag_t relationType = NULL_TAG;
+    Teamcenter::scoped_smptr<tag_t> secondaryObjects;
+
+    LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+    LOGGER_ITK(GRM_list_secondary_objects_only(primaryObject, relationType, &count, &secondaryObjects));
+
+    std::vector<tag_t> result;
+    result.reserve(count);
+    for (int i = 0; i < count; i++)
+    {
+        result.emplace_back(secondaryObjects[i]);
+    }
+
+    return result;
+}
+
+tag_t TcUtil::findRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName)
+{
+    ResultStatus ok;
+    tag_t relation = NULLTAG;
+
+    tag_t relationTypeOpt = findRelationType(relationTypeName);
+    LOGGER_ITK(GRM_find_relation(primaryObject, secondaryObject, relationTypeOpt, &relation));
+
+    return relation;
+}
+
+tag_t TcUtil::findRelationType(const std::string& relationTypeName)
+{
+    ResultStatus ok;
+    tag_t relationType = NULLTAG;
+
+    LOGGER_ITK(GRM_find_relation_type(relationTypeName.c_str(), &relationType));
+
+    return relationType;
+}
+
+tag_t TcUtil::findUserById(const std::string& id)
+{
+    ResultStatus ok;
+    tag_t user = NULLTAG;
+
+    LOGGER_ITK(SA_find_user2(id.c_str(), &user));
+
+    return user;
+}
+
+logical TcUtil::isTypeOf(const tag_t object, const std::string& parentTypeName)
+{
+    ResultStatus ok;
+    logical result = false;
+    tag_t typeTag = NULLTAG;
+
+    LOGGER_ITK(TCTYPE_ask_object_type(object, &typeTag));
+    LOGGER_ITK(TCTYPE_is_type_of_as_str(typeTag, parentTypeName.c_str(), &result));
+
+    return result;
+}
+
+date_t TcUtil::now()
+{
+    const auto now = std::chrono::system_clock::now();
+    time_t t = std::chrono::system_clock::to_time_t(now);
+
+    std::tm utc_tm{};
+#ifdef _WIN32
+    gmtime_s(&utc_tm, &t);
+#else
+    gmtime_r(&t, &utc_tm);
+#endif
+
+    date_t d{};
+    d.year = static_cast<short>(utc_tm.tm_year + 1900);
+    d.month = utc_tm.tm_mon;
+    d.day = utc_tm.tm_mday;
+    d.hour = utc_tm.tm_hour;
+    d.minute = utc_tm.tm_min;
+    d.second = utc_tm.tm_sec;
+
+    return d;
+}
+
+tag_t TcUtil::queryOne(const std::string& queryName, const std::vector<std::string>& entries,
+                       const std::vector<std::string>& values)
+{
+    ResultStatus ok;
+    int resultNum = 0;
+    tag_t queryTag = NULLTAG;
+    Teamcenter::scoped_smptr<tag_t> resultTags;
+
+    LOGGER_ITK(QRY_find2(queryName.c_str(), &queryTag));
+    if (queryTag == NULLTAG)
+    {
+        throw IFail(ERROR_CODE_DEFAULT, "Not found query name");
+    }
+
+    std::vector<char*> entriesCstrs;
+    entriesCstrs.reserve(entries.size());
+    for (auto& s : entries)
+    {
+        entriesCstrs.push_back(const_cast<char*>(s.c_str()));
+    }
+
+    std::vector<char*> valuesCstrs;
+    valuesCstrs.reserve(values.size());
+    for (auto& s : values)
+    {
+        valuesCstrs.push_back(const_cast<char*>(s.c_str()));
+    }
+    LOGGER_ITK(QRY_execute(queryTag, static_cast<short>(entries.size()), entriesCstrs.data(), valuesCstrs.data(),
+                           &resultNum, &resultTags));
+
+    if (resultNum == 0)
+    {
+        return NULLTAG;
+    }
+
+    return resultTags[0];
+}
+
+void TcUtil::setLogger(Teamcenter::Logging::Logger* lp)
+{
+    logger = lp;
+}
+
+std::vector<tag_t> TcUtil::where_used_top(const tag_t target, const std::string& typeName)
+{
+    ResultStatus ok;
+
+    int parentNum = 0;
+    Teamcenter::scoped_smptr<int> levelNum;
+    Teamcenter::scoped_smptr<tag_t> parents;
+    std::vector<tag_t> result;
+
+    LOGGER_ITK(PS_where_used_all(target, PS_where_used_all_levels, &parentNum, &levelNum, &parents));
+    for (int i = 0; i < parentNum; i++)
+    {
+        // Top level
+        if (i == parentNum - 1 || levelNum[i] >= levelNum[i + 1])
+        {
+            if (typeName.empty())
+            {
+                result.emplace_back(parents[i]);
+            }
+            else
+            {
+                if (checkType(parents[i], typeName))
+                {
+                    result.emplace_back(parents[i]);
+                }
+            }
+        }
+    }
+
+    return result;
+}

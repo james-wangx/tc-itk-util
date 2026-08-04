@@ -1,0 +1,108 @@
+#pragma once
+
+#include <map>
+#include <string>
+#include <vector>
+
+#include <mld/logging/Logger.hxx>
+
+#include <schmgt/schmgt_bridge_itk.h>
+#include <tc/tc_arguments.h>
+#include <tc/tc_util.h>
+#include <unidefs.h>
+
+#define LOGGER_DEBUG(fmt, ...)                                 \
+    {                                                          \
+        TC_printf("DEBUG - " fmt "\n", ##__VA_ARGS__);         \
+        logger->debug(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+    }
+
+#define LOGGER_INFO(fmt, ...)                                 \
+    {                                                         \
+        TC_printf("INFO  - " fmt "\n", ##__VA_ARGS__);        \
+        logger->info(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+    }
+
+#define LOGGER_ERROR(code, fmt, ...)                                 \
+    {                                                                \
+        TC_printf("ERROR - " fmt "\n", ##__VA_ARGS__);               \
+        logger->error(__FILE__, __LINE__, code, fmt, ##__VA_ARGS__); \
+    }
+
+#define LOGGER_ERROR_GOTO(code, fmt, ...)                  \
+    {                                                      \
+        LOGGER_ERROR(code, fmt, ##__VA_ARGS__);            \
+        char msg[1024];                                    \
+        snprintf(msg, sizeof(msg), fmt, ##__VA_ARGS__);    \
+        EMH_store_error_s1(EMH_severity_error, code, msg); \
+        goto CLEANUP;                                      \
+    }
+
+#define LOGGER_ITK(func)                \
+    {                                   \
+        LOGGER_DEBUG("Call %s", #func); \
+        ok = func;                      \
+    }
+
+#define LOGGER_REG(func, regName)                           \
+    {                                                       \
+        LOGGER_DEBUG("Call %s", #func);                     \
+        ok = func;                                          \
+        LOGGER_INFO("Registering " regName ", completed!"); \
+    }
+
+extern "C"
+{
+    int POM_AM__ask_application_bypass(logical* hasBypass);
+    int POM_AM__set_application_bypass(logical bypass);
+}
+
+class TcUtil
+{
+public:
+    static void addRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
+    static void addReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType,
+                                 logical retainReleasedDate);
+    static std::map<std::string, std::string> askArgumentNamedValue(TC_argument_list_t* arguments);
+    static std::vector<tag_t> askAttachments(tag_t task, int attachmentType);
+    static std::string askDisplayableValue(tag_t object, const std::string& propName);
+    static std::string askGroupFullName(tag_t group);
+    static std::string askGroupName(tag_t group);
+    static std::string askPersonAttr(tag_t person, const std::string& attrName);
+    static std::string askPersonName(tag_t person);
+    static std::vector<std::string> askPrefValues(const std::string& prefName);
+    static std::vector<tag_t> askReleasedStatus(tag_t workspaceObject);
+    static tag_t askRootTask(tag_t task);
+    static std::string askTaskName(tag_t task);
+    static tag_t askUserDefaultGroup(tag_t user);
+    static std::string askUserName(tag_t user);
+    static date_t askValueDate(tag_t object, const std::string& propName);
+    static std::string askValueDateFmt(tag_t object, const std::string& propName, const std::string& format);
+    static std::string askValueString(tag_t object, const std::string& propName);
+    static std::vector<std::string> askValueStrings(tag_t object, const std::string& propName);
+    static tag_t askValueTag(tag_t object, const std::string& propName);
+    static std::vector<tag_t> askValueTags(tag_t object, const std::string& propName);
+    static bool checkRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
+    static bool checkType(tag_t object, const std::string& typeName);
+    static bool checkUserPrivilege(tag_t user, tag_t object, const std::string& privilegeName);
+    static std::string convertTag2Uid(tag_t tag);
+    static void createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs);
+    static std::string date2string(const date_t& date, const std::string& formatSt);
+    static void deleteAssignments(tag_t schedule, std::vector<tag_t> assignments);
+    static void deleteInstance(tag_t object);
+    static void deleteRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
+    static void deleteReleaseStatus(const std::vector<tag_t>& workspaceObjects, const std::string& statusType);
+    static std::vector<tag_t> findRelatedTagsByType(tag_t primaryObject, const std::string& relationTypeName);
+    static tag_t findRelation(tag_t primaryObject, tag_t secondaryObject, const std::string& relationTypeName);
+    static tag_t findRelationType(const std::string& relationTypeName);
+    static tag_t findUserById(const std::string& id);
+    static logical isTypeOf(tag_t object, const std::string& parentTypeName);
+    static date_t now();
+    static tag_t queryOne(const std::string& queryName, const std::vector<std::string>& entries,
+                          const std::vector<std::string>& values);
+    static void setLogger(Teamcenter::Logging::Logger* lp);
+    static std::vector<tag_t> where_used_top(tag_t target, const std::string& typeName);
+
+private:
+    static Teamcenter::Logging::Logger* logger;
+};

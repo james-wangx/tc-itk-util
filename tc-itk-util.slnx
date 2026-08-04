@@ -11,4 +11,5 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="tc-itk-util-2412/tc-itk-util-2412.vcxproj" Id="3f713ea0-88e8-43d7-b632-41bc1cdcf3de" />
+  <Project Path="tc-itk-util-2506/tc-itk-util-2506.vcxproj" Id="6b4c3803-989c-422b-9940-474e86978362" />
 </Solution>
