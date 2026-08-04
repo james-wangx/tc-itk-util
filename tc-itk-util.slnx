@@ -2,7 +2,6 @@
   <Configurations>
     <BuildType Name="Release" />
     <Platform Name="x64" />
-    <Platform Name="x86" />
   </Configurations>
   <Folder Name="/solutions/">
     <File Path=".clang-format" />

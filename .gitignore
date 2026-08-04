@@ -1,4 +1,6 @@
 .vs/
 
+*.vcxproj.user
+
 bin/
 obj/
