@@ -373,23 +373,14 @@ std::string TcUtil::convertTag2Uid(tag_t tag)
     return uidPtr.getString();
 }
 
-bool TcUtil::createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs)
+void TcUtil::createAssignments(tag_t schedule, std::vector<AssignmentCreate_t>& createInputs)
 {
     ResultStatus ok;
+    int createdNum;
+    Teamcenter::scoped_smptr<tag_t> createdAssignmentsPtr;
 
-    try
-    {
-        int createdNum;
-        Teamcenter::scoped_smptr<tag_t> createdAssignmentsPtr;
-        LOGGER_ITK(SCHMGT_create_assignments(schedule, createInputs.size(), createInputs.data(), &createdNum,
-                                             &createdAssignmentsPtr));
-        return true;
-    }
-    catch (const IFail& ifail)
-    {
-        LOGGER_ERROR(ERROR_CODE_DEFAULT, "Catch error: %s", ifail.getMessage().c_str());
-        return false;
-    }
+    LOGGER_ITK(SCHMGT_create_assignments(schedule, (int)createInputs.size(), createInputs.data(), &createdNum,
+                                         &createdAssignmentsPtr));
 }
 
 std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
@@ -402,20 +393,11 @@ std::string TcUtil::date2string(const date_t& date, const std::string& formatSt)
     return formattedDatePtr.getString();
 }
 
-bool TcUtil::deleteAssignments(tag_t schedule, std::vector<tag_t> assignments)
+void TcUtil::deleteAssignments(tag_t schedule, std::vector<tag_t> assignments)
 {
     ResultStatus ok;
 
-    try
-    {
-        LOGGER_ITK(SCHMGT_delete_assignments(schedule, assignments.size(), assignments.data()));
-        return true;
-    }
-    catch (const IFail& ifail)
-    {
-        LOGGER_ERROR(ERROR_CODE_DEFAULT, "Catch error: %s", ifail.getMessage().c_str());
-        return false;
-    }
+    LOGGER_ITK(SCHMGT_delete_assignments(schedule, (int)assignments.size(), assignments.data()));
 }
 
 void TcUtil::deleteInstance(const tag_t object)
