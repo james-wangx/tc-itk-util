@@ -7,7 +7,7 @@
 ![Release](https://img.shields.io/github/v/release/james-wangx/tc-itk-util)
 ![Downloads](https://img.shields.io/github/downloads/james-wangx/tc-itk-util/total)
 
-[:flag_gb: English](README.md)
+[English](README.md)
 
 Teamcenter ITK 工具集 —— 常用 Teamcenter ITK 操作的 C++ 封装库，以静态库形式分发，支持 Teamcenter 2412 和 2506。
 

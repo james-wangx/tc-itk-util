@@ -1,6 +1,6 @@
 # tc-itk-util-2506
 
-[:flag_gb: English](README.md)
+[English](README.md)
 
 tc-itk-util 的 Teamcenter 2506 构建。通用说明见仓库根目录
 [README](../README_zh-CN.md)。
