@@ -1,5 +1,12 @@
 # tc-itk-util
 
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Language](https://img.shields.io/badge/language-C%2B%2B-00599C)
+![Platform](https://img.shields.io/badge/platform-Windows-blue)
+![Teamcenter](https://img.shields.io/badge/Teamcenter-2412%20%2F%202506-orange)
+![Release](https://img.shields.io/github/v/release/james-wangx/tc-itk-util)
+![Downloads](https://img.shields.io/github/downloads/james-wangx/tc-itk-util/total)
+
 [English](README.md)
 
 Teamcenter ITK 工具集 —— 常用 Teamcenter ITK 操作的 C++ 封装库，以静态库形式分发，支持 Teamcenter 2412 和 2506。
