@@ -7,7 +7,7 @@
 ![Release](https://img.shields.io/github/v/release/james-wangx/tc-itk-util)
 ![Downloads](https://img.shields.io/github/downloads/james-wangx/tc-itk-util/total)
 
-[简体中文](README_zh-CN.md)
+[🇨🇳 简体中文](README_zh-CN.md)
 
 Teamcenter ITK Utilities - a C++ wrapper library over common Teamcenter ITK
 operations, distributed as static libraries for Teamcenter 2412 and 2506.
