@@ -66,4 +66,4 @@ same configuration, otherwise the linker reports LNK2038 (CRT mismatch).
 
 ## License
 
-MIT - see [LICENSE.txt](LICENSE.txt).
+MIT - see [LICENSE](LICENSE).

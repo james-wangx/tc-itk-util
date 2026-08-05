@@ -26,4 +26,4 @@ msbuild tc-itk-util-2412.vcxproj /p:Configuration=Release /p:Platform=x64
 
 ## 许可证
 
-MIT —— 详见 [LICENSE.txt](../LICENSE.txt)。
+MIT —— 详见 [LICENSE](../LICENSE)。

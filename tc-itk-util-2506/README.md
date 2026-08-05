@@ -27,4 +27,4 @@ Output: `bin\libtcitkutil.lib` (published as `libtcitkutil-2506.lib`).
 
 ## License
 
-MIT - see [LICENSE.txt](../LICENSE.txt).
+MIT - see [LICENSE](../LICENSE).

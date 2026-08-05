@@ -7,7 +7,7 @@
     <File Path=".clang-format" />
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
-    <File Path="LICENSE.txt" />
+    <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
   <Project Path="tc-itk-util-2412/tc-itk-util-2412.vcxproj" Id="3f713ea0-88e8-43d7-b632-41bc1cdcf3de" />

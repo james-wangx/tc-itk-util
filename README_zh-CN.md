@@ -57,4 +57,4 @@ msbuild tc-itk-util-2506\tc-itk-util-2506.vcxproj /p:Configuration=Release /p:Pl
 
 ## 许可证
 
-MIT —— 详见 [LICENSE.txt](LICENSE.txt)。
+MIT —— 详见 [LICENSE](LICENSE)。
