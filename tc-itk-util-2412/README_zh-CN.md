@@ -1,6 +1,6 @@
 # tc-itk-util-2412
 
-[🇬🇧 English](README.md)
+[:flag_gb: English](README.md)
 
 tc-itk-util 的 Teamcenter 2412 构建。通用说明见仓库根目录
 [README](../README_zh-CN.md)。

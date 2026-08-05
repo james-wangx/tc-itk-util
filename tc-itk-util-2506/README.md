@@ -1,6 +1,6 @@
 # tc-itk-util
 
-[🇨🇳 简体中文](README_zh-CN.md)
+[:flag_cn: 简体中文](README_zh-CN.md)
 
 Teamcenter 2506 build of tc-itk-util. See the repository root
 [README](../README.md) for general information.
